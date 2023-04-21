@@ -1,8 +1,8 @@
 {
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "service_worker.js"
   },
-  "browser_action": {
+  "action": {
     "default_title": "duotok inspiration",
     "default_popup": "popup.html"
   },
@@ -21,12 +21,13 @@
       "runAt": "document_start"
     }
   ],
-  "permissions": ["tabs", "storage"],
+  "permissions": ["tabs", "storage", "webRequest"],
+  "host_permissions": ["https://www.netflix.com/*", "*://*.nflxvideo.net/*"],
   "description": "duotok inspiration",
   "icons": {
     "128": "icon_128.png"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "duotok inspiration",
   "update_url": "https://clients2.google.com/service/update2/crx",
   "version": "0.0.40"
