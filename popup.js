@@ -100,24 +100,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-document
-  .getElementById("language-select")
-  .addEventListener("change", (event) => {
-    chrome.storage.sync.set({ langPractice: event.target.value }).then(() => {
-      console.log("language to practice is set to " + event.target.value);
-    });
-  });
-
 // document
 //   .getElementById("language-select")
 //   .addEventListener("change", (event) => {
-//     console.log(`have changed the practice language to ${event.target.value}`);
-//     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//       var tabId = tabs[0].id;
-//       chrome.tabs.sendMessage(tabId, {
-//         action: "changeLanguage",
-//         language: event.target.value,
-//       });
-//       console.log("sent message!");
+//     chrome.storage.sync.set({ langPractice: event.target.value }, function () {
+//       console.log("language to practice is set to " + event.target.value);
 //     });
 //   });
+
+document
+  .getElementById("language-select")
+  .addEventListener("change", (event) => {
+    console.log(`have changed the practice language to ${event.target.value}`);
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      var tabId = tabs[0].id;
+      chrome.tabs.sendMessage(tabId, {
+        action: "changeLanguage",
+        language: event.target.value,
+      });
+      console.log("sent message!");
+    });
+  });
