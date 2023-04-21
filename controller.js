@@ -238,13 +238,13 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
   $scope.newSubtitleRequest = function (data) {
     var description = "lang" + ($scope.languages.length + 1);
-    var sub = processDXFPToVTT(data.detail, description);
+    var sub = processDXFPToVTT(data, description);
     var video = $("video");
     var half =
       (video.length > 0 && video[0].currentTime / video[0].duration <= 0.75) ||
       video.length == 0;
     if (
-      data.detail.indexOf("<?xml") >= 0 &&
+      data.indexOf("<?xml") >= 0 &&
       sub[1] >= 200 &&
       $scope.languages.length <= 1 &&
       half
@@ -252,6 +252,15 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       $scope.addSubtitleToVideo(sub, description);
     }
   };
+
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+      console.log(
+        `Storage key "${key}" in namespace "${namespace}" changed.`,
+        `Old value was "${oldValue}", new value is "${newValue}".`
+      );
+    }
+  });
 
   $scope.addSubtitleToVideo = function (sub, description) {
     var lengthOfSubs = Object.keys(localStorage).filter(function (e) {
@@ -329,17 +338,27 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     }
   };
 
-  $scope.$watch("subtitleUpload", function () {
-    if (
-      $scope.subtitleUpload != undefined &&
-      $scope.subtitleUpload.data != undefined
-    ) {
-      var description = "lang" + ($scope.languages.length + 1);
-      var textSub = $scope.subtitleUpload.data;
-      var sub = processSRTToVTT(textSub, description);
-      $scope.addSubtitleToVideo(sub, description);
-    }
+  document.addEventListener("yourCustomEvent", function (e) {
+    var data = e.detail;
+    $scope.newSubtitleRequest(data);
+    $scope.showDivControllerFirstTime();
+    $scope.applySavedConfigs();
+
+    console.log("content script");
+    console.log("received", e);
   });
+
+  // $scope.$watch("subtitleUpload", function () {
+  //   if (
+  //     $scope.subtitleUpload != undefined &&
+  //     $scope.subtitleUpload.data != undefined
+  //   ) {
+  //     var description = "lang" + ($scope.languages.length + 1);
+  //     var textSub = $scope.subtitleUpload.data;
+  //     var sub = processSRTToVTT(textSub, description);
+  //     $scope.addSubtitleToVideo(sub, description);
+  //   }
+  // });
 
   $interval(function () {
     $scope.applySavedConfigs();
@@ -513,6 +532,7 @@ function addTrackVideo(url, label, id) {
   video.textTracks[idx].lastOffset = 0;
 }
 
+// For returning the XML returned from netflix to VTT.
 function processDXFPToVTT(xml, description) {
   xml = xml.replace(/<br[ ]*\/>/g, "\n");
   xml = parse(xml, "text/xml");

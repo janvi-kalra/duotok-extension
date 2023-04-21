@@ -15,10 +15,17 @@
         "angular.min.js",
         "ng-file-model.min.js",
         "utils.js",
-        "controller.js"
+        "controller.js",
+        "content_script.js"
       ],
-      "matches": ["https://www.netflix.com/*"],
+      "matches": ["<all_urls>"],
       "runAt": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["<all_urls>"]
     }
   ],
   "permissions": ["tabs", "storage", "webRequest"],
