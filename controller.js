@@ -657,17 +657,12 @@ function showSubtitleSelection() {
     "button[data-uia='control-audio-subtitle']"
   );
   subtitleBtn?.click();
+  document.querySelector(".ltr-4dcwks")?.classList?.add("show");
 }
 
 function hideSubtitleSelection() {
-  // document
-  //   .querySelector("div.ltr-4dcwks")
-  //   .__reactEventHandlers$cwl58tvgfft.onPointerLeave();
-  const escapeKeyEvent = new KeyboardEvent("keydown", { key: "Escape" });
-  window.dispatchEvent(escapeKeyEvent);
-  window.dispatchEvent(escapeKeyEvent);
-  window.dispatchEvent(escapeKeyEvent);
-  window.dispatchEvent(escapeKeyEvent);
+  const elem = document.querySelector(".ltr-4dcwks.show");
+  elem.classList.remove("show");
 }
 
 function setLanguage(lang, langType) {
