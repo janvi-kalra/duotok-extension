@@ -7,10 +7,10 @@ $("html").attr("ng-controller", "MyCtrl");
 //   document.head.appendChild(script);
 // });
 
-chrome.runtime.sendMessage({ message: "panel_inserted" }, function (response) {
-  $("body").append(response.message);
-});
+// chrome.runtime.sendMessage({ message: "panel_inserted" }, function (response) {
+//   $("body").append(response.message);
+// });
 
-chrome.runtime.sendMessage({ message: "main_url" }, function (response) {
-  localStorage.setItem("main_url", response.message);
-});
+// chrome.runtime.sendMessage({ message: "main_url" }, function (response) {
+//   localStorage.setItem("main_url", response.message);
+// });

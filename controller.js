@@ -248,10 +248,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
   // TODO: add request for lang1/lang2
   $scope.newSubtitleRequest = function (data) {
-    var description = "lang" + ($scope.languages.length + 1);
-    if ((description = "lang3")) {
-      description = "lang1";
-    }
+    var description = LANG_TYPE === "lang1" ? "lang1" : "lang2";
     var sub = processDXFPToVTT(data, description);
     var video = $("video");
     var half =
@@ -266,15 +263,6 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       $scope.addSubtitleToVideo(sub, description);
     }
   };
-
-  chrome.storage.onChanged.addListener((changes, namespace) => {
-    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-      console.log(
-        `Storage key "${key}" in namespace "${namespace}" changed.`,
-        `Old value was "${oldValue}", new value is "${newValue}".`
-      );
-    }
-  });
 
   $scope.addSubtitleToVideo = function (sub, description) {
     var lengthOfSubs = Object.keys(localStorage).filter(function (e) {
@@ -302,7 +290,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       subtitles: [],
       show: false,
     });
-    console.log(sub[0]);
+    // console.log(sub[0]);
     var url = constructBlobURL(sub[0]);
 
     // addTrackVideo(url, description, description);
@@ -319,7 +307,6 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
   $scope.saveSubtitleToStorage = function (sub) {
     localStorage.setItem(sub.name, JSON.stringify(sub));
-    console.log("at this point this is what the local storage looks like");
   };
 
   // $scope.changeFontSize = function (lang) {
@@ -354,9 +341,6 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     $scope.newSubtitleRequest(data);
     // $scope.showDivControllerFirstTime();
     $scope.applySavedConfigs();
-
-    console.log("content script");
-    console.log("received", e);
   });
 
   // $scope.$watch("subtitleUpload", function () {
@@ -490,6 +474,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 });
 
 //if page changes then reset controls eg: another episode of a series
+var LANG_TYPE = "";
 var oldLocation = location.href;
 var trackId =
   document.location.toString().match(/.*?\/watch\/(\d+).*/) != null &&
@@ -656,8 +641,15 @@ function showSubtitleSelection() {
   const subtitleBtn = document.querySelector(
     "button[data-uia='control-audio-subtitle']"
   );
-  subtitleBtn?.click();
-  document.querySelector(".ltr-4dcwks")?.classList?.add("show");
+  if (!subtitleBtn) {
+    console.log("Cannot find 'control-audio-subtitle' button in DOM");
+  }
+  subtitleBtn.click();
+  const hiddenSubtitleDiv = document.querySelector(".ltr-4dcwks");
+  if (!hiddenSubtitleDiv) {
+    console.log("Cannot find '.ltr-4dcwks' hidden in DOM");
+  }
+  hiddenSubtitleDiv.classList?.add("show");
 }
 
 // TODO(Janvi): Hacky way to close the controller tbh.
@@ -666,13 +658,17 @@ function hideSubtitleSelection() {
   elem.classList.remove("show");
 }
 
-function setLanguage(lang, langType) {
-  LANG_TYPE = langType; // Globally changing specified language now
+function setLanguage(lang) {
   showSubtitleSelection();
   const subtitleLanguage = document.querySelector(
-    `li.ltr-1iahk0t[data-uia="subtitle-item-${lang}"]`
+    `li[data-uia="subtitle-item-${lang}"]`
   );
-  subtitleLanguage?.click();
+  if (!subtitleLanguage) {
+    console.log(
+      `Cannot find ${lang} in DOM. Tried looking for  document.querySelector(li[data-uia="subtitle-item-${lang}"]`
+    );
+  }
+  subtitleLanguage.click();
   hideSubtitleSelection();
 }
 
@@ -691,11 +687,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  for (let [langPractice, { oldValue, newValue }] of Object.entries(changes)) {
-    setLanguage(newValue, "practice");
+  for (let [langType, { oldValue, newValue }] of Object.entries(changes)) {
+    if (langType === "langPractice") {
+      LANG_TYPE = "lang1";
+    }
+    if (langType === "langNative") {
+      LANG_TYPE = "lang2";
+    }
+    setLanguage(newValue);
 
     console.log(
-      `Storage key "${langPractice}" in namespace "${namespace}" changed.`,
+      `Storage key "${langType}" in namespace "${namespace}" changed.`,
       `Old value was "${oldValue}", new value is "${newValue}".`
     );
   }
