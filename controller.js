@@ -660,6 +660,7 @@ function showSubtitleSelection() {
   document.querySelector(".ltr-4dcwks")?.classList?.add("show");
 }
 
+// TODO(Janvi): Hacky way to close the controller tbh.
 function hideSubtitleSelection() {
   const elem = document.querySelector(".ltr-4dcwks.show");
   elem.classList.remove("show");
