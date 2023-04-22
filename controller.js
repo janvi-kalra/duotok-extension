@@ -2,6 +2,16 @@ Object.keys(localStorage)
   .filter((f) => f.match(/lang\d*-sub-\d*/))
   .forEach((i) => localStorage.removeItem(i));
 
+const PRACTICE_LANG_COLOR = "#ffffff";
+const PRACTICE_LANG_FONTSIZE = 60;
+const PRACTICE_LANG_POSITION = "Bottom";
+const PRACTICE_LANG_OFFSET = 10;
+
+const NATIVE_LANG_COLOR = "#ffffff";
+const NATIVE_LANG_FONTSIZE = 15;
+const NATIVE_LANG_POSITION = "Top";
+const NATIVE_LANG_OFFSET = 0;
+
 var app = angular.module("MyApp", ["ng-file-model"]);
 app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   $scope.languages = [];
@@ -136,67 +146,67 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
   };
 
   // HERE
-  $scope.getLanguages = function () {
-    console.log("enter get languages");
-    var $player = $('[data-uia="player"]');
-    $player.removeClass("passive ltr-omkt8s").addClass("active ltr-omkt8s");
-    $("button[data-uia='control-audio-subtitle']").click();
+  // $scope.getLanguages = function () {
+  //   console.log("enter get languages");
+  //   var $player = $('[data-uia="player"]');
+  //   $player.removeClass("passive ltr-omkt8s").addClass("active ltr-omkt8s");
+  //   $("button[data-uia='control-audio-subtitle']").click();
 
-    var languages = [];
-    $("li[data-uia^='subtitle-item-']").each(function () {
-      var lang = $(this).attr("data-uia").replace("subtitle-item-", "");
-      languages.push(lang);
-    });
-    console.log("these are the languages", languages);
-    $player.removeClass("active ltr-omkt8s").addClass("passive ltr-omkt8s");
-  };
+  //   var languages = [];
+  //   $("li[data-uia^='subtitle-item-']").each(function () {
+  //     var lang = $(this).attr("data-uia").replace("subtitle-item-", "");
+  //     languages.push(lang);
+  //   });
+  //   console.log("these are the languages", languages);
+  //   $player.removeClass("active ltr-omkt8s").addClass("passive ltr-omkt8s");
+  // };
 
-  $scope.changeLanguage = function (language) {
-    console.log("arrived at change language");
-    $('[data-uia="subtitle-item-selected-European Spanish (CC)"]').attr(
-      "data-uia",
-      "subtitle-item-selected-Simplified Chinese"
-    );
-  };
+  // $scope.changeLanguage = function (language) {
+  //   console.log("arrived at change language");
+  //   $('[data-uia="subtitle-item-selected-European Spanish (CC)"]').attr(
+  //     "data-uia",
+  //     "subtitle-item-selected-Simplified Chinese"
+  //   );
+  // };
 
-  $scope.jumpTrackTo = function (lang, trackId, pauseVideo) {
-    if (pauseVideo) {
-      $scope.pauseVideo();
-    }
-    if (
-      trackId != undefined &&
-      trackId.length >= 3 &&
-      !lang.name.startsWith(trackId)
-    ) {
-      lang.listNameSearch = lang.listName;
-      if (lang.jumpTo != undefined && lang.jumpTo.startsWith(lang.name)) {
-        lang.jumpTo = "";
-        lang.listNameSearch = "";
-      }
-    } else {
-      lang.listNameSearch = "";
-    }
-    var e = trackId != undefined && trackId.length > 0 ? $("#" + trackId) : "";
-    if (e.length > 0) {
-      var seletorSubOverflow = "#sub" + lang.name + " .overflow";
-      $(seletorSubOverflow)[0].scrollTop = $(e)[0].offsetTop - 20;
-    }
-  };
+  // $scope.jumpTrackTo = function (lang, trackId, pauseVideo) {
+  //   if (pauseVideo) {
+  //     $scope.pauseVideo();
+  //   }
+  //   if (
+  //     trackId != undefined &&
+  //     trackId.length >= 3 &&
+  //     !lang.name.startsWith(trackId)
+  //   ) {
+  //     lang.listNameSearch = lang.listName;
+  //     if (lang.jumpTo != undefined && lang.jumpTo.startsWith(lang.name)) {
+  //       lang.jumpTo = "";
+  //       lang.listNameSearch = "";
+  //     }
+  //   } else {
+  //     lang.listNameSearch = "";
+  //   }
+  //   var e = trackId != undefined && trackId.length > 0 ? $("#" + trackId) : "";
+  //   if (e.length > 0) {
+  //     var seletorSubOverflow = "#sub" + lang.name + " .overflow";
+  //     $(seletorSubOverflow)[0].scrollTop = $(e)[0].offsetTop - 20;
+  //   }
+  // };
 
-  $scope.changeTimeTrack = function (l) {
-    Array.from($scope.video.textTracks).forEach((track) => {
-      if (track.mode === "showing" && track.id == l.name) {
-        var time = l.offset - track.lastOffset;
-        Array.from(track.cues).forEach((cue) => {
-          cue.startTime += time;
-          cue.endTime += time;
-        });
-        track.lastOffset = l.offset;
-      }
-    });
-    $scope.reconstructSubtitle(l);
-    $("body").trigger("mousemove");
-  };
+  // $scope.changeTimeTrack = function (l) {
+  //   Array.from($scope.video.textTracks).forEach((track) => {
+  //     if (track.mode === "showing" && track.id == l.name) {
+  //       var time = l.offset - track.lastOffset;
+  //       Array.from(track.cues).forEach((cue) => {
+  //         cue.startTime += time;
+  //         cue.endTime += time;
+  //       });
+  //       track.lastOffset = l.offset;
+  //     }
+  //   });
+  //   $scope.reconstructSubtitle(l);
+  //   $("body").trigger("mousemove");
+  // };
 
   $scope.nonWesternLanguages = function () {
     if ($scope.nonWesternLanguagesObserver == undefined) {
@@ -226,18 +236,22 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     }
   };
 
-  $scope.deleteTrack = function (l) {
-    var r = window.confirm("Are you sure?");
-    if (r) {
-      l.enabled = false;
-      l.deleted = true;
-      $scope.enableLanguage(l);
-      localStorage.removeItem(description + "-sub-" + trackId);
-    }
-  };
+  // $scope.deleteTrack = function (l) {
+  //   var r = window.confirm("Are you sure?");
+  //   if (r) {
+  //     l.enabled = false;
+  //     l.deleted = true;
+  //     $scope.enableLanguage(l);
+  //     localStorage.removeItem(description + "-sub-" + trackId);
+  //   }
+  // };
 
+  // TODO: add request for lang1/lang2
   $scope.newSubtitleRequest = function (data) {
     var description = "lang" + ($scope.languages.length + 1);
+    if ((description = "lang3")) {
+      description = "lang1";
+    }
     var sub = processDXFPToVTT(data, description);
     var video = $("video");
     var half =
@@ -246,7 +260,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     if (
       data.indexOf("<?xml") >= 0 &&
       sub[1] >= 200 &&
-      $scope.languages.length <= 1 &&
+      // $scope.languages.length <= 1 &&
       half
     ) {
       $scope.addSubtitleToVideo(sub, description);
@@ -275,73 +289,70 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       localStorage.setItem(description + "-sub-" + trackId, sub[0]);
     }
 
-    var alreadyLoaded = $scope.languages.filter(function (l) {
-      return l.name == description;
-    }).length;
+    $scope.languages = $scope.languages.filter((l) => l.name != description);
+    $scope.languages.push({
+      name: description,
+      enabled: true,
+      offset: PRACTICE_LANG_OFFSET,
+      position: PRACTICE_LANG_POSITION,
+      fontSize: PRACTICE_LANG_FONTSIZE,
+      color: PRACTICE_LANG_COLOR,
+      cueChangeEvent: false,
+      deleted: false,
+      subtitles: [],
+      show: false,
+    });
+    console.log(sub[0]);
+    var url = constructBlobURL(sub[0]);
 
-    if (alreadyLoaded == 0) {
-      $scope.languages.push({
-        name: description,
-        enabled: true,
-        offset: 0,
-        position: "Bottom",
-        fontSize: 30,
-        color: "#f3f361",
-        cueChangeEvent: false,
-        deleted: false,
-        subtitles: [],
-        show: false,
-      });
-      console.log(sub[0]);
-      var url = constructBlobURL(sub[0]);
+    // addTrackVideo(url, description, description);
 
-      //addTrackVideo(url, description, description);
-
-      $scope.saveSubtitleToStorage({
-        name: description + "-sub-load",
-        url: url,
-        id: description,
-        href: document.location.toString(),
-        date: new Date().getTime(),
-      });
-    }
+    // localStorage.removeItem(description + "-sub-load");
+    $scope.saveSubtitleToStorage({
+      name: description + "-sub-load",
+      url: url,
+      id: description,
+      href: document.location.toString(),
+      date: new Date().getTime(),
+    });
   };
 
   $scope.saveSubtitleToStorage = function (sub) {
     localStorage.setItem(sub.name, JSON.stringify(sub));
+    console.log("at this point this is what the local storage looks like");
   };
 
-  $scope.changeFontSize = function (lang) {
-    localStorage.setItem(lang.name + "-" + "fontSize", lang.fontSize);
-  };
+  // $scope.changeFontSize = function (lang) {
+  //   localStorage.setItem(lang.name + "-" + "fontSize", lang.fontSize);
+  // };
 
-  $scope.changeFontColor = function (lang) {
-    localStorage.setItem(lang.name + "-" + "fontColor", lang.color);
-  };
+  // $scope.changeFontColor = function (lang) {
+  //   localStorage.setItem(lang.name + "-" + "fontColor", lang.color);
+  // };
 
-  $scope.showDivControllerFirstTime = function () {
-    $("#divController").removeClass("divControllerHover");
-    // setTimeout(function () {
-    //   $("#divController").addClass("divControllerHover");
-    // }, 1);
-  };
+  // $scope.showDivControllerFirstTime = function () {
+  //   $("#divController").removeClass("divControllerHover");
+  //   setTimeout(function () {
+  //     $("#divController").addClass("divControllerHover");
+  //   }, 1);
+  // };
 
-  $scope.dispatchMessage = function (data) {
-    if (data.message == "NEW_SUBTITLE") {
-      console.log("new subtitle!");
-      $scope.newSubtitleRequest(data);
-      $scope.showDivControllerFirstTime();
-      $scope.applySavedConfigs();
-    } else if (data.message == "RESET") {
-      $scope.languages = [];
-      $scope.showDivControllerFirstTime();
-    }
-  };
+  // $scope.dispatchMessage = function (data) {
+  //   if (data.message == "NEW_SUBTITLE") {
+  //     console.log("new subtitle!");
+  //     $scope.newSubtitleRequest(data);
+  //     $scope.showDivControllerFirstTime();
+  //     $scope.applySavedConfigs();
+  //   } else if (data.message == "RESET") {
+  //     $scope.languages = [];
+  //     $scope.showDivControllerFirstTime();
+  //   }
+  // };
 
   document.addEventListener("yourCustomEvent", function (e) {
     var data = e.detail;
     $scope.newSubtitleRequest(data);
-    $scope.showDivControllerFirstTime();
+    // $scope.showDivControllerFirstTime();
     $scope.applySavedConfigs();
 
     console.log("content script");
@@ -433,26 +444,26 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       // Practicing Language
       if (language.name === "lang1") {
         console.log(`language object ${language}`);
-        language.color = "#ff0000";
-        language.fontSize = 31;
-        language.position = "Bottom";
-        language.offset = 0;
+        language.color = PRACTICE_LANG_COLOR;
+        language.fontSize = PRACTICE_LANG_FONTSIZE;
+        language.position = PRACTICE_LANG_POSITION;
+        language.offset = PRACTICE_LANG_OFFSET;
       }
       // Native Language
       else if (language.name === "lang2") {
-        language.color = "#ffffff";
-        language.fontSize = 31;
-        language.position = "Top";
-        language.offset = 0;
+        language.color = NATIVE_LANG_COLOR;
+        language.fontSize = NATIVE_LANG_FONTSIZE;
+        language.position = NATIVE_LANG_POSITION;
+        language.offset = NATIVE_LANG_OFFSET;
       }
     });
 
     savedConfig.forEach(function (c) {
       var languageName = c.split("-")[0];
       var valueProperty = localStorage.getItem(c);
-      if (c.indexOf("-sub-") >= 0 && c.split("-sub-")[1].endsWith(trackId)) {
-        $scope.addSubtitleToVideo([valueProperty], languageName);
-      }
+      // if (c.indexOf("-sub-") >= 0 && c.split("-sub-")[1].endsWith(trackId)) {
+      //   $scope.addSubtitleToVideo([valueProperty], languageName);
+      // }
     });
 
     // savedConfig.forEach(function (c) {
@@ -521,10 +532,15 @@ function findTrackIndexById(id) {
 
 function addTrackVideo(url, label, id) {
   var video = $("video")[0];
-  var track = document.createElement("track");
-  track.kind = "captions";
+  var track;
+  // Before adding a new element with the same ID see if one already exists
+  track = document.querySelector('track[id="lang1"]');
+  if (!track) {
+    track = document.createElement("track");
+    track.kind = "captions";
+    track.id = id;
+  }
   track.src = url;
-  track.id = id;
 
   video.appendChild(track);
   var idx = findTrackIndexById(id);
@@ -623,24 +639,68 @@ function getUrlVars() {
   return vars;
 }
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  console.log(message);
-  if (message.action === "changeLanguage") {
-    const player = document.querySelector('[data-uia="player"]');
+function showControls() {
+  const player = document.querySelector('[data-uia="player"]');
+  const event = new PointerEvent("pointermove", {
+    bubbles: true,
+    cancelable: true,
+    pointerType: "mouse", // set the pointer type to mouse
+    clientX: 100, // set the x coordinate of the mouse pointer
+    clientY: 200, // set the y coordinate of the mouse pointer
+  });
+  player.dispatchEvent(event);
+}
 
-    const event = new PointerEvent("pointermove", {
-      bubbles: true,
-      cancelable: true,
-      pointerType: "mouse", // set the pointer type to mouse
-      clientX: 100, // set the x coordinate of the mouse pointer
-      clientY: 200, // set the y coordinate of the mouse pointer
-    });
+function showSubtitleSelection() {
+  showControls();
+  const subtitleBtn = document.querySelector(
+    "button[data-uia='control-audio-subtitle']"
+  );
+  subtitleBtn?.click();
+}
 
-    player.dispatchEvent(event);
+function hideSubtitleSelection() {
+  // document
+  //   .querySelector("div.ltr-4dcwks")
+  //   .__reactEventHandlers$cwl58tvgfft.onPointerLeave();
+  const escapeKeyEvent = new KeyboardEvent("keydown", { key: "Escape" });
+  window.dispatchEvent(escapeKeyEvent);
+  window.dispatchEvent(escapeKeyEvent);
+  window.dispatchEvent(escapeKeyEvent);
+  window.dispatchEvent(escapeKeyEvent);
+}
 
-    const controlBtn = document.querySelector(
-      "button[data-uia='control-audio-subtitle']"
+function setLanguage(lang, langType) {
+  LANG_TYPE = langType; // Globally changing specified language now
+  showSubtitleSelection();
+  const subtitleLanguage = document.querySelector(
+    `li.ltr-1iahk0t[data-uia="subtitle-item-${lang}"]`
+  );
+  subtitleLanguage?.click();
+  hideSubtitleSelection();
+}
+
+// chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+//   console.log(message);
+//   if (message.action === "changeLanguage") {
+//     setLanguage("Off");
+//   }
+// });
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const result = await chrome.storage.sync.get(["langPractice"]);
+  if (result) {
+    setLanguage(result.langPractice, "practice");
+  }
+});
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  for (let [langPractice, { oldValue, newValue }] of Object.entries(changes)) {
+    setLanguage(newValue, "practice");
+
+    console.log(
+      `Storage key "${langPractice}" in namespace "${namespace}" changed.`,
+      `Old value was "${oldValue}", new value is "${newValue}".`
     );
-    controlBtn.click();
   }
 });

@@ -3,12 +3,20 @@
 
 <div class="container">
   <div>
-    <div class="title">I speak English</div>
-    <div>I want to learn...</div>
-    <select id="language-select">
+    <div class="title">I speak...</div>
+    <select id="languages-speak">
       <option value="english">English</option>
-      <option value="italian">Italian</option>
-      <option value="spanish">Spanish</option>
+    </select>
+    <div class="title">I want to practice...</div>
+    <select id="languages-practice">
+      <option value="French">French</option>
+      <option value="Italian">Italian</option>
+      <option value="Spanish">Spanish</option>
+      <option value="Simplified Chinese">Simplified Chinese</option>
+      <option value="Japanese">Japanese</option>
+      <option value="Traditional Chinese">Traditional Chinese</option>
     </select>
   </div>
 </div>
+
+<!-- TODO: Render the list based on the inner DOM html languages available... do it in the JS? content script adds it to storage and popup renders it? -->

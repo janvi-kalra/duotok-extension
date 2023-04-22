@@ -16,15 +16,10 @@
   };
   XHR.send = function (postData) {
     this.addEventListener("load", function () {
-      var endTime = new Date().toISOString();
       var myUrl = this._url ? this._url.toLowerCase() : this._url;
       if (myUrl) {
         if (myUrl.indexOf("/?o=") != -1) {
-          console.log(myUrl);
           var responseData = this.response;
-          console.log("this is the response: ");
-
-          console.log(responseData);
 
           document.dispatchEvent(
             new CustomEvent("yourCustomEvent", {
