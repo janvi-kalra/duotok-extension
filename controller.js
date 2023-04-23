@@ -5,7 +5,7 @@ Object.keys(localStorage)
 var app = angular.module("MyApp", ["ng-file-model"]);
 app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   $scope.languages = [];
-  $scope.subtitleMap = {};
+  subtitleMap = {};
   $scope.enableLanguage = function (l) {
     l.enabled = !l.enabled;
     var idx = findTrackIndexById(l.name);
@@ -301,6 +301,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
   //   }, 1);
   // };
 
+  // TODO: janvi. consider deleting if it's never used.
   $scope.dispatchMessage = function (data) {
     if (data.message == "NEW_SUBTITLE") {
       console.log(`${LANG_TYPE} called NEW_SUBTITLE}`);
@@ -310,25 +311,44 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     } else if (data.message == "RESET") {
       console.log(`${LANG_TYPE} called RESET}`);
       $scope.languages = [];
-      $scope.subtitleMap = {};
+      subtitleMap = {};
       // $scope.showDivControllerFirstTime();
     }
   };
 
   document.addEventListener("New_Subtitle", function (e) {
     var { url, data } = e.detail;
-    if (data) {
-      $scope.subtitleMap[url] = data;
-    } else {
-      data = $scope.subtitleMap[url];
+    if (LANGUAGE === "") {
+      INITIAL_SUBS = data;
+      console.log(`${LANG_TYPE} first time Netflix loading`);
     }
-    console.log(`${LANG_TYPE} received subtitles that look like xxx`);
+    if (LANGUAGE) {
+      subtitleMap[LANGUAGE] = data;
+      console.log(`${LANG_TYPE} received and stored subtitles for ${LANGUAGE}`);
+    }
     try {
       $scope.newSubtitleRequest(data);
       // $scope.showDivControllerFirstTime();
       $scope.applySavedConfigs();
     } catch (err) {
       console.log("unable to apply them err:", err);
+    }
+  });
+
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    for (let [langType, { oldValue, newValue }] of Object.entries(changes)) {
+      if (langType === "langPractice") {
+        LANG_TYPE = "lang1";
+      }
+      if (langType === "langNative") {
+        LANG_TYPE = "lang2";
+      }
+      console.log(`${LANG_TYPE} changed from ${oldValue} to ${newValue}`);
+      setLanguage(newValue);
+      const alreadyLoadedSubs = subtitleMap[LANGUAGE];
+      if (alreadyLoadedSubs) {
+        $scope.newSubtitleRequest(alreadyLoadedSubs);
+      }
     }
   });
 
@@ -466,6 +486,8 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
 //if page changes then reset controls eg: another episode of a series
 var LANG_TYPE = "lang1";
+var LANGUAGE = "";
+var INITIAL_SUBS = "";
 var oldLocation = location.href;
 var trackId =
   document.location.toString().match(/.*?\/watch\/(\d+).*/) != null &&
@@ -649,8 +671,27 @@ function hideSubtitleSelection() {
   elem.classList.remove("show");
 }
 
+function getSelectedSubtitleLanguage() {
+  showSubtitleSelection();
+  const chosenSub = document.querySelector(
+    'li[data-uia*="subtitle-item-selected"]'
+  );
+  return chosenSub.innerText;
+}
+
 function setLanguage(lang) {
   var errors;
+
+  // First time setting the language. Store the original Netflix language.
+  if (LANGUAGE === "") {
+    LANGUAGE = getSelectedSubtitleLanguage();
+    subtitleMap[LANGUAGE] = INITIAL_SUBS;
+    INITIAL_SUBS = "";
+    console.log(
+      `${LANG_TYPE} Netflix initial setting was ${LANGUAGE}, stored in map`
+    );
+  }
+
   try {
     showSubtitleSelection();
     const subtitleLanguage = document.querySelector(
@@ -661,13 +702,14 @@ function setLanguage(lang) {
         `Cannot find ${lang} in DOM. Tried looking for document.querySelector(li[data-uia="subtitle-item-${lang}"]`
       );
     }
-    subtitleLanguage.click();
+    subtitleLanguage?.click();
     hideSubtitleSelection();
   } catch (err) {
     errors = err;
   }
   if (!errors) {
-    console.log(`${LANG_TYPE} Netflix Subtitles changed to ${lang}`);
+    LANGUAGE = lang;
+    console.log(`${LANG_TYPE} Netflix Subtitles changed to ${LANGUAGE}`);
   }
 }
 
@@ -682,18 +724,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   const result = await chrome.storage.sync.get(["langPractice"]);
   if (result) {
     setLanguage(result.langPractice, "practice");
-  }
-});
-
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  for (let [langType, { oldValue, newValue }] of Object.entries(changes)) {
-    if (langType === "langPractice") {
-      LANG_TYPE = "lang1";
-    }
-    if (langType === "langNative") {
-      LANG_TYPE = "lang2";
-    }
-    console.log(`${LANG_TYPE} changed from ${oldValue} to ${newValue}`);
-    setLanguage(newValue);
   }
 });

@@ -1,139 +1,140 @@
 .divController {
-  width: 400px;
-  height: 370px;
-  top: 90px;
-  background: white;
-  position: absolute;
-  left: 0px;
-  font-size: 14px;
-  color: black;
-  padding: 0px 20px 0px 20px;
-  z-index: 999999999999;
-  border-radius: 10px;
-}
-
-.overflow {
-  overflow-y: scroll;
-}
-
-.divControllerHover {
-  transition: 0.5s all;
-  transition-delay: 5s;
-  opacity: 0;
-}
-
-.options {
-  opacity: 0.9;
-}
-
-#divController:hover {
-  opacity: 0.9 !important;
-  transition-delay: 0s;
-}
-
-#divController.select:hover {
-  opacity: 0.9 !important;
-  transition-delay: 0s;
-}
-
-.player-timedtext-text-container {
-  display: none !important;
-}
-
-.TnITTtw-mate-subtitle-wrap {
-  display: none !important;
-}
-
-::cue {
-  font-size: 30px;
-  font-weight: bolder;
-  background: none;
-  color: #f3f361;
-  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
-  z-index: 999999999999;
-}
-
-.PlayerControls--container {
-  opacity: 0.6;
-}
-
-#tableController {
-  font-size: 14px;
-}
-
-#tableController td {
-  padding-right: 8px;
-  padding-bottom: 10px;
-}
-
-.middle {
-  text-align: center;
-}
-
-#myLanguages .time {
-  width: 50px;
-}
-
-.fontAdjust {
-  width: 40px !important;
-}
-
-.subtitlesList {
-  font-size: 14px;
-  margin-top: 10px;
-  user-select: text;
-}
-
-table.subtitlesList tr:hover {
-  background: #ccc !important;
-}
-
-table.subtitlesList tr:nth-child(odd) {
-  background: #efeeee;
-}
-
-.watermarkSub {
-  position: absolute;
-  top: 225px;
-  left: 108px;
-  font-size: 66px;
-  font-weight: bold;
-  opacity: 0.2;
-}
-
-.close {
-  position: absolute;
-  top: 2px;
-  right: 0px;
-  border: 1px solid;
-  border-radius: 20px;
-  font-size: 17px;
-  cursor: pointer;
-  color: black;
-}
-
-.subName {
-  position: absolute;
-  top: 225px;
-  transform: rotate(-90deg);
-  right: 0px;
-  font-size: 25px;
-}
-
-.roundButtom {
-  border-radius: 10px;
-}
-
-.file {
-  font-size: 12px;
-}
-
-.searchSubtitlesForNetflix {
-  position: absolute;
-  background: #9c9999;
-  width: 383px;
-  padding-left: 10px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  height: 22px;
-}
+    width: 400px;
+    height: 370px;
+    top: 90px;
+    background: white;
+    position: absolute;
+    left: 0px;
+    font-size: 14px;
+    color: black;
+    padding: 0px 20px 0px 20px;
+    z-index: 999999999999;
+    border-radius: 10px;
+  }
+  
+  .overflow {
+    overflow-y: scroll;
+  }
+  
+  .divControllerHover {
+    transition: 0.5s all;
+    transition-delay: 5s;
+    opacity: 0;
+  }
+  
+  .options {
+    opacity: 0.9;
+  }
+  
+  #divController:hover {
+    opacity: 0.9 !important;
+    transition-delay: 0s;
+  }
+  
+  #divController.select:hover {
+    opacity: 0.9 !important;
+    transition-delay: 0s;
+  }
+  
+  .player-timedtext-text-container {
+    display: none !important;
+  }
+  
+  .TnITTtw-mate-subtitle-wrap {
+    display: none !important;
+  }
+  
+  /* TODO: set styling for cue1 & cue2 & remove it from controller code completely. */
+  ::cue {
+    font-size: 30px;
+    font-weight: bolder;
+    background: none;
+    color: #f3f361;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+    z-index: 999999999999;
+  }
+  
+  .PlayerControls--container {
+    opacity: 0.6;
+  }
+  
+  #tableController {
+    font-size: 14px;
+  }
+  
+  #tableController td {
+    padding-right: 8px;
+    padding-bottom: 10px;
+  }
+  
+  .middle {
+    text-align: center;
+  }
+  
+  #myLanguages .time {
+    width: 50px;
+  }
+  
+  .fontAdjust {
+    width: 40px !important;
+  }
+  
+  .subtitlesList {
+    font-size: 14px;
+    margin-top: 10px;
+    user-select: text;
+  }
+  
+  table.subtitlesList tr:hover {
+    background: #ccc !important;
+  }
+  
+  table.subtitlesList tr:nth-child(odd) {
+    background: #efeeee;
+  }
+  
+  .watermarkSub {
+    position: absolute;
+    top: 225px;
+    left: 108px;
+    font-size: 66px;
+    font-weight: bold;
+    opacity: 0.2;
+  }
+  
+  .close {
+    position: absolute;
+    top: 2px;
+    right: 0px;
+    border: 1px solid;
+    border-radius: 20px;
+    font-size: 17px;
+    cursor: pointer;
+    color: black;
+  }
+  
+  .subName {
+    position: absolute;
+    top: 225px;
+    transform: rotate(-90deg);
+    right: 0px;
+    font-size: 25px;
+  }
+  
+  .roundButtom {
+    border-radius: 10px;
+  }
+  
+  .file {
+    font-size: 12px;
+  }
+  
+  .searchSubtitlesForNetflix {
+    position: absolute;
+    background: #9c9999;
+    width: 383px;
+    padding-left: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    height: 22px;
+  }
