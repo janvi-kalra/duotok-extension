@@ -32,7 +32,8 @@
   "host_permissions": ["https://www.netflix.com/*", "*://*.nflxvideo.net/*"],
   "description": "duotok inspiration",
   "icons": {
-    "128": "icon_128.png"
+    "128": "icon128.png",
+    "48": "icon48.png"
   },
   "manifest_version": 3,
   "name": "duotok inspiration",

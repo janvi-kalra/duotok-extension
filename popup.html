@@ -1,25 +1,36 @@
-<link href="popup.css" rel="stylesheet" type="text/css" />
-<script type="module" src="popup.js"></script>
-
-<div class="container">
-  <div>
-    <div class="title">I speak...</div>
-    <select id="languages-native">
-      <option value="English">English</option>
-      <option value="Arabic">Arabic</option>
-      <option value="Hebrew">Hebrew</option>
-      <option value="French">French</option>
-      <option value="Simplified Chinese">Simplified Chinese</option>
-    </select>
-    <div class="title">I want to practice...</div>
-    <select id="languages-practice">
-      <option value="English">English</option>
-      <option value="Arabic">Arabic</option>
-      <option value="Hebrew">Hebrew</option>
-      <option value="French">French</option>
-      <option value="Simplified Chinese">Simplified Chinese</option>
-    </select>
-  </div>
-</div>
-
-<!-- TODO: Render the list based on the inner DOM html languages available... do it in the JS? content script adds it to storage and popup renders it? -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="popup.css" rel="stylesheet" type="text/css" />
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <img src="duotok_logo.jpeg" alt="Your image description" />
+        <div class="title">I speak...</div>
+        <div class="select-wrapper">
+          <select id="languages-native">
+            <option value="English">English</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Hebrew">Hebrew</option>
+            <option value="French">French</option>
+            <option value="Simplified Chinese">Simplified Chinese</option>
+          </select>
+          <i class="fas fa-angle-down"></i>
+        </div>
+        <div class="title">I want to practice...</div>
+        <div class="select-wrapper">
+          <select id="languages-practice">
+            <option value="English">English</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Hebrew">Hebrew</option>
+            <option value="French">French</option>
+            <option value="Simplified Chinese">Simplified Chinese</option>
+          </select>
+          <i class="fas fa-angle-down"></i>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
