@@ -8,12 +8,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 document
   .getElementById("languages-practice")
   .addEventListener("change", async (event) => {
+    console.log(`Changed PRACTICE language to ${event.target.value}`);
     await chrome.storage.sync.set({ langPractice: event.target.value });
   });
 
 document
   .getElementById("languages-native")
   .addEventListener("change", async (event) => {
+    console.log(`Changed NATIVE language to ${event.target.value}`);
     await chrome.storage.sync.set({ langNative: event.target.value });
   });
 

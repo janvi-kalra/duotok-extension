@@ -21,6 +21,8 @@
         if (myUrl.indexOf("/?o=") != -1) {
           var responseData = this.response;
 
+          console.log(`Intercepted Netflix subtitles at ${myUrl}`);
+
           document.dispatchEvent(
             new CustomEvent("yourCustomEvent", {
               url: myUrl,

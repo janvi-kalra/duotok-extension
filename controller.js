@@ -145,30 +145,6 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     }
   };
 
-  // HERE
-  // $scope.getLanguages = function () {
-  //   console.log("enter get languages");
-  //   var $player = $('[data-uia="player"]');
-  //   $player.removeClass("passive ltr-omkt8s").addClass("active ltr-omkt8s");
-  //   $("button[data-uia='control-audio-subtitle']").click();
-
-  //   var languages = [];
-  //   $("li[data-uia^='subtitle-item-']").each(function () {
-  //     var lang = $(this).attr("data-uia").replace("subtitle-item-", "");
-  //     languages.push(lang);
-  //   });
-  //   console.log("these are the languages", languages);
-  //   $player.removeClass("active ltr-omkt8s").addClass("passive ltr-omkt8s");
-  // };
-
-  // $scope.changeLanguage = function (language) {
-  //   console.log("arrived at change language");
-  //   $('[data-uia="subtitle-item-selected-European Spanish (CC)"]').attr(
-  //     "data-uia",
-  //     "subtitle-item-selected-Simplified Chinese"
-  //   );
-  // };
-
   // $scope.jumpTrackTo = function (lang, trackId, pauseVideo) {
   //   if (pauseVideo) {
   //     $scope.pauseVideo();
@@ -246,9 +222,11 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
   //   }
   // };
 
-  // TODO: add request for lang1/lang2
   $scope.newSubtitleRequest = function (data) {
     var description = LANG_TYPE === "lang1" ? "lang1" : "lang2";
+    console.log(
+      `${LANG_TYPE} received new subtitle request for ${description}`
+    );
     var sub = processDXFPToVTT(data, description);
     var video = $("video");
     var half =
@@ -262,20 +240,27 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     ) {
       $scope.addSubtitleToVideo(sub, description);
     }
+    console.log(`${LANG_TYPE} completed adding new subtitle`);
   };
 
   $scope.addSubtitleToVideo = function (sub, description) {
-    var lengthOfSubs = Object.keys(localStorage).filter(function (e) {
-      return (
-        e.match(/lang\d-sub-/) &&
-        e.split("-sub-")[1] == trackId &&
-        localStorage.getItem(e) == sub[0]
-      );
-    }).length;
+    // When adding for the first time, add the subs to the local storage. Skip after that.
+    // var lengthOfSubs = Object.keys(localStorage).filter(function (e) {
+    //   return (
+    //     e.match(/lang\d-sub-/) &&
+    //     e.split("-sub-")[1] == trackId &&
+    //     localStorage.getItem(e) == sub[0]
+    //   );
+    // }).length;
 
-    if (lengthOfSubs == 0) {
-      localStorage.setItem(description + "-sub-" + trackId, sub[0]);
-    }
+    // if (lengthOfSubs == 0) {
+    localStorage.setItem(description + "-sub-" + trackId, sub[0]);
+    console.log(
+      `${LANG_TYPE} updated the local storage with key value ${
+        description + "-sub-" + trackId
+      }`
+    );
+    // }
 
     $scope.languages = $scope.languages.filter((l) => l.name != description);
     $scope.languages.push({
@@ -288,7 +273,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       cueChangeEvent: false,
       deleted: false,
       subtitles: [],
-      show: false,
+      show: true,
     });
     // console.log(sub[0]);
     var url = constructBlobURL(sub[0]);
@@ -307,15 +292,18 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
   $scope.saveSubtitleToStorage = function (sub) {
     localStorage.setItem(sub.name, JSON.stringify(sub));
+    console.log(
+      `${LANG_TYPE} saved subtitle to storage for subname ${sub.name}`
+    );
   };
 
-  // $scope.changeFontSize = function (lang) {
-  //   localStorage.setItem(lang.name + "-" + "fontSize", lang.fontSize);
-  // };
+  $scope.changeFontSize = function (lang) {
+    localStorage.setItem(lang.name + "-" + "fontSize", lang.fontSize);
+  };
 
-  // $scope.changeFontColor = function (lang) {
-  //   localStorage.setItem(lang.name + "-" + "fontColor", lang.color);
-  // };
+  $scope.changeFontColor = function (lang) {
+    localStorage.setItem(lang.name + "-" + "fontColor", lang.color);
+  };
 
   // $scope.showDivControllerFirstTime = function () {
   //   $("#divController").removeClass("divControllerHover");
@@ -338,9 +326,14 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
   document.addEventListener("yourCustomEvent", function (e) {
     var data = e.detail;
-    $scope.newSubtitleRequest(data);
-    // $scope.showDivControllerFirstTime();
-    $scope.applySavedConfigs();
+    console.log(`${LANG_TYPE} received subtitles that look like xxx`);
+    try {
+      $scope.newSubtitleRequest(data);
+      // $scope.showDivControllerFirstTime();
+      $scope.applySavedConfigs();
+    } catch (err) {
+      console.log("unable to apply them err:", err);
+    }
   });
 
   // $scope.$watch("subtitleUpload", function () {
@@ -357,7 +350,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
 
   $interval(function () {
     $scope.applySavedConfigs();
-  }, 5000);
+  }, 100);
 
   $interval(function () {
     var timeTextTrack = ".image-based-timed-text svg";
@@ -427,11 +420,11 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     $scope.languages.forEach(function (language) {
       // Practicing Language
       if (language.name === "lang1") {
-        console.log(`language object ${language}`);
         language.color = PRACTICE_LANG_COLOR;
         language.fontSize = PRACTICE_LANG_FONTSIZE;
         language.position = PRACTICE_LANG_POSITION;
         language.offset = PRACTICE_LANG_OFFSET;
+        language.show = true;
       }
       // Native Language
       else if (language.name === "lang2") {
@@ -439,42 +432,44 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
         language.fontSize = NATIVE_LANG_FONTSIZE;
         language.position = NATIVE_LANG_POSITION;
         language.offset = NATIVE_LANG_OFFSET;
+        language.show = true;
       }
-    });
-
-    savedConfig.forEach(function (c) {
-      var languageName = c.split("-")[0];
-      var valueProperty = localStorage.getItem(c);
-      // if (c.indexOf("-sub-") >= 0 && c.split("-sub-")[1].endsWith(trackId)) {
-      //   $scope.addSubtitleToVideo([valueProperty], languageName);
-      // }
     });
 
     // savedConfig.forEach(function (c) {
     //   var languageName = c.split("-")[0];
-    //   var languagePosition = parseInt(languageName.replace("lang", ""));
-    //   var currentLanguage = $scope.languages[languagePosition - 1];
-    //   if (currentLanguage != undefined) {
-    //     var valueProperty = localStorage.getItem(c);
-    //     if (c.endsWith("fontSize")) {
-    //       currentLanguage.fontSize = parseInt(valueProperty);
-    //     }
-    //     if (c.endsWith("fontColor")) {
-    //       currentLanguage.color = valueProperty;
-    //     }
-    //     if (c.endsWith("fontPosition")) {
-    //       currentLanguage.position = valueProperty;
-    //       $scope.changePosition(currentLanguage, true);
-    //     }
+    //   var valueProperty = localStorage.getItem(c);
+    //   if (c.indexOf("-sub-") >= 0 && c.split("-sub-")[1].endsWith(trackId)) {
+    //     $scope.addSubtitleToVideo([valueProperty], languageName);
     //   }
     // });
+
+    savedConfig.forEach(function (c) {
+      var languageName = c.split("-")[0];
+      var currentLanguage = $scope.languages.filter(
+        (l) => l.name === languageName
+      )[0];
+      if (currentLanguage != undefined) {
+        var valueProperty = localStorage.getItem(c);
+        if (c.endsWith("fontSize")) {
+          currentLanguage.fontSize = parseInt(valueProperty);
+        }
+        if (c.endsWith("fontColor")) {
+          currentLanguage.color = valueProperty;
+        }
+        if (c.endsWith("fontPosition")) {
+          currentLanguage.position = valueProperty;
+          $scope.changePosition(currentLanguage, true);
+        }
+      }
+    });
   };
 
   $scope.applySavedConfigs();
 });
 
 //if page changes then reset controls eg: another episode of a series
-var LANG_TYPE = "";
+var LANG_TYPE = "lang1";
 var oldLocation = location.href;
 var trackId =
   document.location.toString().match(/.*?\/watch\/(\d+).*/) != null &&
@@ -519,7 +514,7 @@ function addTrackVideo(url, label, id) {
   var video = $("video")[0];
   var track;
   // Before adding a new element with the same ID see if one already exists
-  track = document.querySelector('track[id="lang1"]');
+  track = document.querySelector(`track[id=${LANG_TYPE}]`);
   if (!track) {
     track = document.createElement("track");
     track.kind = "captions";
@@ -659,17 +654,25 @@ function hideSubtitleSelection() {
 }
 
 function setLanguage(lang) {
-  showSubtitleSelection();
-  const subtitleLanguage = document.querySelector(
-    `li[data-uia="subtitle-item-${lang}"]`
-  );
-  if (!subtitleLanguage) {
-    console.log(
-      `Cannot find ${lang} in DOM. Tried looking for  document.querySelector(li[data-uia="subtitle-item-${lang}"]`
+  var errors;
+  try {
+    showSubtitleSelection();
+    const subtitleLanguage = document.querySelector(
+      `li[data-uia="subtitle-item-${lang}"]`
     );
+    if (!subtitleLanguage) {
+      console.log(
+        `Cannot find ${lang} in DOM. Tried looking for document.querySelector(li[data-uia="subtitle-item-${lang}"]`
+      );
+    }
+    subtitleLanguage.click();
+    hideSubtitleSelection();
+  } catch (err) {
+    errors = err;
   }
-  subtitleLanguage.click();
-  hideSubtitleSelection();
+  if (!errors) {
+    console.log(`${LANG_TYPE} Netflix Subtitles changed to ${lang}`);
+  }
 }
 
 // chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
@@ -694,11 +697,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     if (langType === "langNative") {
       LANG_TYPE = "lang2";
     }
+    console.log(`${LANG_TYPE} changed from ${oldValue} to ${newValue}`);
     setLanguage(newValue);
-
-    console.log(
-      `Storage key "${langType}" in namespace "${namespace}" changed.`,
-      `Old value was "${oldValue}", new value is "${newValue}".`
-    );
   }
 });
