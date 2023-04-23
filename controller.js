@@ -2,19 +2,10 @@ Object.keys(localStorage)
   .filter((f) => f.match(/lang\d*-sub-\d*/))
   .forEach((i) => localStorage.removeItem(i));
 
-const PRACTICE_LANG_COLOR = "#ffffff";
-const PRACTICE_LANG_FONTSIZE = 60;
-const PRACTICE_LANG_POSITION = "Bottom";
-const PRACTICE_LANG_OFFSET = 10;
-
-const NATIVE_LANG_COLOR = "#ffffff";
-const NATIVE_LANG_FONTSIZE = 15;
-const NATIVE_LANG_POSITION = "Top";
-const NATIVE_LANG_OFFSET = 0;
-
 var app = angular.module("MyApp", ["ng-file-model"]);
 app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   $scope.languages = [];
+  $scope.subtitleMap = {};
   $scope.enableLanguage = function (l) {
     l.enabled = !l.enabled;
     var idx = findTrackIndexById(l.name);
@@ -266,10 +257,8 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     $scope.languages.push({
       name: description,
       enabled: true,
-      offset: PRACTICE_LANG_OFFSET,
-      position: PRACTICE_LANG_POSITION,
-      fontSize: PRACTICE_LANG_FONTSIZE,
-      color: PRACTICE_LANG_COLOR,
+      // offset: PRACTICE_LANG_OFFSET,
+      // position: PRACTICE_LANG_POSITION,
       cueChangeEvent: false,
       deleted: false,
       subtitles: [],
@@ -297,13 +286,13 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     );
   };
 
-  $scope.changeFontSize = function (lang) {
-    localStorage.setItem(lang.name + "-" + "fontSize", lang.fontSize);
-  };
+  // $scope.changeFontSize = function (lang) {
+  //   localStorage.setItem(lang.name + "-" + "fontSize", lang.fontSize);
+  // };
 
-  $scope.changeFontColor = function (lang) {
-    localStorage.setItem(lang.name + "-" + "fontColor", lang.color);
-  };
+  // $scope.changeFontColor = function (lang) {
+  //   localStorage.setItem(lang.name + "-" + "fontColor", lang.color);
+  // };
 
   // $scope.showDivControllerFirstTime = function () {
   //   $("#divController").removeClass("divControllerHover");
@@ -312,20 +301,27 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
   //   }, 1);
   // };
 
-  // $scope.dispatchMessage = function (data) {
-  //   if (data.message == "NEW_SUBTITLE") {
-  //     console.log("new subtitle!");
-  //     $scope.newSubtitleRequest(data);
-  //     $scope.showDivControllerFirstTime();
-  //     $scope.applySavedConfigs();
-  //   } else if (data.message == "RESET") {
-  //     $scope.languages = [];
-  //     $scope.showDivControllerFirstTime();
-  //   }
-  // };
+  $scope.dispatchMessage = function (data) {
+    if (data.message == "NEW_SUBTITLE") {
+      console.log(`${LANG_TYPE} called NEW_SUBTITLE}`);
+      $scope.newSubtitleRequest(data);
+      // $scope.showDivControllerFirstTime();
+      $scope.applySavedConfigs();
+    } else if (data.message == "RESET") {
+      console.log(`${LANG_TYPE} called RESET}`);
+      $scope.languages = [];
+      $scope.subtitleMap = {};
+      // $scope.showDivControllerFirstTime();
+    }
+  };
 
-  document.addEventListener("yourCustomEvent", function (e) {
-    var data = e.detail;
+  document.addEventListener("New_Subtitle", function (e) {
+    var { url, data } = e.detail;
+    if (data) {
+      $scope.subtitleMap[url] = data;
+    } else {
+      data = $scope.subtitleMap[url];
+    }
     console.log(`${LANG_TYPE} received subtitles that look like xxx`);
     try {
       $scope.newSubtitleRequest(data);
@@ -379,9 +375,9 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       $scope.timeTextTrackDeleted = true;
     }
 
-    $scope.showDivController =
-      document.location.toString().indexOf("https://www.netflix.com/watch/") ==
-      0;
+    // $scope.showDivController =
+    //   document.location.toString().indexOf("https://www.netflix.com/watch/") ==
+    //   0;
 
     var subs = Object.keys(localStorage).filter(function (e) {
       return e.match(/lang\d-sub-load/);
@@ -397,7 +393,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
         }
       }
     });
-  }, 100);
+  }, 5000);
 
   $scope.receiveMessage = function (event) {
     if (
@@ -417,24 +413,24 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       return e.startsWith("lang");
     });
 
-    $scope.languages.forEach(function (language) {
-      // Practicing Language
-      if (language.name === "lang1") {
-        language.color = PRACTICE_LANG_COLOR;
-        language.fontSize = PRACTICE_LANG_FONTSIZE;
-        language.position = PRACTICE_LANG_POSITION;
-        language.offset = PRACTICE_LANG_OFFSET;
-        language.show = true;
-      }
-      // Native Language
-      else if (language.name === "lang2") {
-        language.color = NATIVE_LANG_COLOR;
-        language.fontSize = NATIVE_LANG_FONTSIZE;
-        language.position = NATIVE_LANG_POSITION;
-        language.offset = NATIVE_LANG_OFFSET;
-        language.show = true;
-      }
-    });
+    // $scope.languages.forEach(function (language) {
+    //   // Practicing Language
+    //   if (language.name === "lang1") {
+    //     language.color = PRACTICE_LANG_COLOR;
+    //     language.fontSize = PRACTICE_LANG_FONTSIZE;
+    //     language.position = PRACTICE_LANG_POSITION;
+    //     language.offset = PRACTICE_LANG_OFFSET;
+    //     language.show = true;
+    //   }
+    //   // Native Language
+    //   else if (language.name === "lang2") {
+    //     language.color = NATIVE_LANG_COLOR;
+    //     language.fontSize = NATIVE_LANG_FONTSIZE;
+    //     language.position = NATIVE_LANG_POSITION;
+    //     language.offset = NATIVE_LANG_OFFSET;
+    //     language.show = true;
+    //   }
+    // });
 
     // savedConfig.forEach(function (c) {
     //   var languageName = c.split("-")[0];
@@ -525,7 +521,7 @@ function addTrackVideo(url, label, id) {
   video.appendChild(track);
   var idx = findTrackIndexById(id);
   video.textTracks[idx].mode = "showing";
-  video.textTracks[idx].lastOffset = 0;
+  video.textTracks[idx].lastOffset = 10;
 }
 
 // For returning the XML returned from netflix to VTT.

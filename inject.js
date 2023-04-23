@@ -24,9 +24,9 @@
           console.log(`Intercepted Netflix subtitles at ${myUrl}`);
 
           document.dispatchEvent(
-            new CustomEvent("yourCustomEvent", {
+            new CustomEvent("New_Subtitle", {
               url: myUrl,
-              detail: responseData,
+              detail: { url: myUrl, data: responseData },
             })
           );
 
