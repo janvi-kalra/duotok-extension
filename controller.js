@@ -263,6 +263,7 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
       deleted: false,
       subtitles: [],
       show: true,
+      mode: "showing",
     });
     // console.log(sub[0]);
     var url = constructBlobURL(sub[0]);
@@ -532,7 +533,7 @@ function addTrackVideo(url, label, id) {
   var video = $("video")[0];
   var track;
   // Before adding a new element with the same ID see if one already exists
-  track = document.querySelector(`track[id=${LANG_TYPE}]`);
+  track = document.querySelector(`track[id=${id}]`);
   if (!track) {
     track = document.createElement("track");
     track.kind = "captions";
@@ -713,16 +714,30 @@ function setLanguage(lang) {
   }
 }
 
-// chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-//   console.log(message);
-//   if (message.action === "changeLanguage") {
-//     setLanguage("Off");
-//   }
-// });
+// Define your function
+function myFunction() {
+  chrome.runtime.sendMessage("getLanguages");
+  chrome.runtime.onMessage.addListener((languages) => {
+    if (languages.langPractice) {
+      LANG_TYPE = "lang1";
+      setLanguage(languages.langPractice);
+    }
+    if (languages.langNative) {
+      LANG_TYPE = "lang2";
+      setLanguage(languages.langNative);
+    }
+  });
+}
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const result = await chrome.storage.sync.get(["langPractice"]);
-  if (result) {
-    setLanguage(result.langPractice, "practice");
+function checkForElement() {
+  const element = document.querySelector("div.watch-video--loading-view");
+  if (element === null) {
+    // The element is no longer on the page, so call your function
+    myFunction();
+  } else {
+    // The element is still on the page, so check again in 100 milliseconds
+    setTimeout(checkForElement, 100);
   }
-});
+}
+
+checkForElement();
