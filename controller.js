@@ -372,6 +372,18 @@ function getSelectedSubtitleLanguage() {
   return chosenSub.innerText;
 }
 
+function changeNetflixAudioSubtitle(element, lang) {
+  const languages = element.querySelectorAll("li");
+  for (let i = 0; i < languages.length; i++) {
+    const text = languages[i].innerText;
+    if (text.includes(lang)) {
+      languages[i].click();
+      return languages[i];
+    }
+  }
+  console.log(`Cannot find ${lang} in DOM`);
+}
+
 function setLanguage(lang) {
   var errors;
 
@@ -387,15 +399,13 @@ function setLanguage(lang) {
 
   try {
     showSubtitleSelection();
-    const subtitleLanguage = document.querySelector(
-      `li[data-uia="subtitle-item-${lang}"]`
-    );
-    if (!subtitleLanguage) {
-      console.log(
-        `Cannot find ${lang} in DOM. Tried looking for document.querySelector(li[data-uia="subtitle-item-${lang}"]`
-      );
+    const [audioEl, subtitleEl] = document.querySelector(
+      'div[data-uia="selector-audio-subtitle"]'
+    ).children;
+    if (LANG_TYPE == "lang1") {
+      changeNetflixAudioSubtitle(audioEl, lang);
     }
-    subtitleLanguage?.click();
+    changeNetflixAudioSubtitle(subtitleEl, lang);
     hideSubtitleSelection();
   } catch (err) {
     errors = err;

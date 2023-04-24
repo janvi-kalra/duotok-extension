@@ -3,7 +3,7 @@
     "service_worker": "service_worker.js"
   },
   "action": {
-    "default_title": "duotok",
+    "default_title": "DuoTok: watch Netflix to learn languages",
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -32,12 +32,11 @@
   "host_permissions": ["https://*.nflxvideo.net/*"],
   "description": "Learn languages while watching your favorite TV shows on Netflix",
   "icons": {
-    "16": "icon48.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
   "manifest_version": 3,
-  "name": "duotok",
+  "name": "DuoTok: watch Netflix to learn languages",
   "update_url": "https://clients2.google.com/service/update2/crx",
   "version": "0.0.0.1"
 }
