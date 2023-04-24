@@ -181,27 +181,27 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     }
   };
 
-  $scope.changePosition = function (l, wait) {
-    if (wait) {
-      $timeout(function () {
-        $scope.changePosition(l, false);
-      }, 10000);
-    } else {
-      var idx = findTrackIndexById(l.name);
-      if (
-        $scope.video != undefined &&
-        $scope.video.textTracks != undefined &&
-        $scope.video.textTracks[idx] != undefined
-      ) {
-        var cues = $scope.video.textTracks[idx].cues;
-        var line = l.position == "Top" ? 0 : -1;
-        for (var i = 0; i < cues.length; i++) {
-          cues[i].line = line;
-        }
-        localStorage.setItem(l.name + "-" + "fontPosition", l.position);
-      }
-    }
-  };
+  // $scope.changePosition = function (l, wait) {
+  //   if (wait) {
+  //     $timeout(function () {
+  //       $scope.changePosition(l, false);
+  //     }, 10000);
+  //   } else {
+  //     var idx = findTrackIndexById(l.name);
+  //     if (
+  //       $scope.video != undefined &&
+  //       $scope.video.textTracks != undefined &&
+  //       $scope.video.textTracks[idx] != undefined
+  //     ) {
+  //       var cues = $scope.video.textTracks[idx].cues;
+  //       var line = l.position == "Top" ? 0 : -1;
+  //       for (var i = 0; i < cues.length; i++) {
+  //         cues[i].line = line;
+  //       }
+  //       localStorage.setItem(l.name + "-" + "fontPosition", l.position);
+  //     }
+  //   }
+  // };
 
   // $scope.deleteTrack = function (l) {
   //   var r = window.confirm("Are you sure?");
@@ -461,25 +461,25 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     //   }
     // });
 
-    savedConfig.forEach(function (c) {
-      var languageName = c.split("-")[0];
-      var currentLanguage = $scope.languages.filter(
-        (l) => l.name === languageName
-      )[0];
-      if (currentLanguage != undefined) {
-        var valueProperty = localStorage.getItem(c);
-        if (c.endsWith("fontSize")) {
-          currentLanguage.fontSize = parseInt(valueProperty);
-        }
-        if (c.endsWith("fontColor")) {
-          currentLanguage.color = valueProperty;
-        }
-        if (c.endsWith("fontPosition")) {
-          currentLanguage.position = valueProperty;
-          $scope.changePosition(currentLanguage, true);
-        }
-      }
-    });
+    // savedConfig.forEach(function (c) {
+    //   var languageName = c.split("-")[0];
+    //   var currentLanguage = $scope.languages.filter(
+    //     (l) => l.name === languageName
+    //   )[0];
+    //   if (currentLanguage != undefined) {
+    //     var valueProperty = localStorage.getItem(c);
+    //     if (c.endsWith("fontSize")) {
+    //       currentLanguage.fontSize = parseInt(valueProperty);
+    //     }
+    //     if (c.endsWith("fontColor")) {
+    //       currentLanguage.color = valueProperty;
+    //     }
+    //     if (c.endsWith("fontPosition")) {
+    //       currentLanguage.position = valueProperty;
+    //       $scope.changePosition(currentLanguage, true);
+    //     }
+    //   }
+    // });
   };
 
   $scope.applySavedConfigs();
@@ -657,11 +657,13 @@ function showSubtitleSelection() {
   );
   if (!subtitleBtn) {
     console.log("Cannot find 'control-audio-subtitle' button in DOM");
+    return;
   }
   subtitleBtn.click();
   const hiddenSubtitleDiv = document.querySelector(".ltr-4dcwks");
   if (!hiddenSubtitleDiv) {
     console.log("Cannot find '.ltr-4dcwks' hidden in DOM");
+    return;
   }
   hiddenSubtitleDiv.classList?.add("show");
 }

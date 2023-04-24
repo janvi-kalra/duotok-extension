@@ -3,7 +3,7 @@
     "service_worker": "service_worker.js"
   },
   "action": {
-    "default_title": "duotok inspiration",
+    "default_title": "duotok",
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -18,25 +18,26 @@
         "controller.js",
         "content_script.js"
       ],
-      "matches": ["<all_urls>"],
+      "matches": ["https://www.netflix.com/*"],
       "runAt": "document_start"
     }
   ],
   "web_accessible_resources": [
     {
       "resources": ["inject.js"],
-      "matches": ["<all_urls>"]
+      "matches": ["https://www.netflix.com/*"]
     }
   ],
-  "permissions": ["tabs", "storage", "webRequest"],
-  "host_permissions": ["https://www.netflix.com/*", "*://*.nflxvideo.net/*"],
-  "description": "duotok inspiration",
+  "permissions": ["tabs", "storage"],
+  "host_permissions": ["https://*.nflxvideo.net/*"],
+  "description": "Learn languages while watching your favorite TV shows on Netflix",
   "icons": {
-    "128": "icon128.png",
-    "48": "icon48.png"
+    "16": "icon48.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "manifest_version": 3,
-  "name": "duotok inspiration",
+  "name": "duotok",
   "update_url": "https://clients2.google.com/service/update2/crx",
-  "version": "0.0.40"
+  "version": "0.0.0.1"
 }
