@@ -24,22 +24,11 @@
           console.log(`Intercepted Netflix subtitles at ${myUrl}`);
 
           document.dispatchEvent(
-            new CustomEvent("New_Subtitle", {
+            new CustomEvent("NEW_SUBTITLE", {
               url: myUrl,
-              detail: { url: myUrl, data: responseData },
+              detail: { data: responseData },
             })
           );
-
-          this.addEventListener("load", function () {
-            window.postMessage(
-              {
-                detail: this.responseText,
-                secret: "somerandompassword",
-                message: "NEW_SUBTITLE",
-              },
-              document.location.toString()
-            );
-          });
         }
       }
     });

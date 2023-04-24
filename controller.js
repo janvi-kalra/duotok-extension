@@ -23,51 +23,51 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   //   });
   // };
 
-  $scope.unmarkAllExcept = function (s, lang, languages) {
-    if (s.marked) {
-      lang.subSelected = s;
-    }
-    lang.subtitles.forEach(function (v) {
-      if (v.id != s.id) {
-        v.marked = false;
-      }
-    });
+  //   $scope.unmarkAllExcept = function (s, lang, languages) {
+  //     if (s.marked) {
+  //       lang.subSelected = s;
+  //     }
+  //     lang.subtitles.forEach(function (v) {
+  //       if (v.id != s.id) {
+  //         v.marked = false;
+  //       }
+  //     });
 
-    languages = languages.filter(function (l) {
-      return l.show;
-    });
+  //     languages = languages.filter(function (l) {
+  //       return l.show;
+  //     });
 
-    if (
-      languages.length > 1 &&
-      languages[0].subSelected != undefined &&
-      languages[1].subSelected != undefined
-    ) {
-      if (s.marked) {
-        var offset =
-          languages[0].subSelected.startTime -
-          languages[1].subSelected.startTime;
-        var sign = offset < 0 ? "" : "+";
-        var offsetMsg = Number(offset).toFixed(2);
-        $scope.video.pause();
-        var r = window.confirm(`The difference between ${
-          languages[0].name
-        } and ${languages[1].name} is ${offsetMsg}\n
-Do you want adjust time of subtitle ${languages[1].name} with ${
-          sign + offsetMsg
-        } s?`);
-        if (r) {
-          languages[1].offset = offset;
-          $scope.changeTimeTrack(lang);
-        }
-        languages.forEach(function (lang) {
-          lang.subtitles.forEach(function (v) {
-            v.marked = false;
-          });
-        });
-        languages[1].subSelected = undefined;
-      }
-    }
-  };
+  //     if (
+  //       languages.length > 1 &&
+  //       languages[0].subSelected != undefined &&
+  //       languages[1].subSelected != undefined
+  //     ) {
+  //       if (s.marked) {
+  //         var offset =
+  //           languages[0].subSelected.startTime -
+  //           languages[1].subSelected.startTime;
+  //         var sign = offset < 0 ? "" : "+";
+  //         var offsetMsg = Number(offset).toFixed(2);
+  //         $scope.video.pause();
+  //         var r = window.confirm(`The difference between ${
+  //           languages[0].name
+  //         } and ${languages[1].name} is ${offsetMsg}\n
+  // Do you want adjust time of subtitle ${languages[1].name} with ${
+  //           sign + offsetMsg
+  //         } s?`);
+  //         if (r) {
+  //           languages[1].offset = offset;
+  //           $scope.changeTimeTrack(lang);
+  //         }
+  //         languages.forEach(function (lang) {
+  //           lang.subtitles.forEach(function (v) {
+  //             v.marked = false;
+  //           });
+  //         });
+  //         languages[1].subSelected = undefined;
+  //       }
+  //     }
+  //   };
 
   $scope.reconstructSubtitle = function (l) {
     var idx = findTrackIndexById(l.name);
@@ -93,48 +93,48 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
     }
   };
 
-  $scope.showSubtitlesTrack = function (l) {
-    $scope.subtitleSelectTitle =
-      $scope.languages.filter(function (x) {
-        return x.show;
-      }).length > 1
-        ? `Select one track in subtitle ${$scope.languages[1].name} to syncronize with one track in subtitle ${$scope.languages[0].name}`
-        : "";
+  // $scope.showSubtitlesTrack = function (l) {
+  //   $scope.subtitleSelectTitle =
+  //     $scope.languages.filter(function (x) {
+  //       return x.show;
+  //     }).length > 1
+  //       ? `Select one track in subtitle ${$scope.languages[1].name} to syncronize with one track in subtitle ${$scope.languages[0].name}`
+  //       : "";
 
-    var idx = findTrackIndexById(l.name);
+  //   var idx = findTrackIndexById(l.name);
 
-    $scope.reconstructSubtitle(l);
+  //   $scope.reconstructSubtitle(l);
 
-    if (!l.cueChangeEvent) {
-      $("#sub" + l.name).dblclick(function () {
-        document.execCommand("copy");
-      });
-      l.cueChangeEvent = true;
-      $scope.video.textTracks[idx].addEventListener("cuechange", function (x) {
-        if (l.show && x.target.activeCues.length > 0) {
-          /*var act = x.target.activeCues;
-          var finalText = "";
-          for(var i = 0; i < act.length; i++){
-            console.log(act[i]);
-            finalText += act[i].text;
-          }
-          finalText = finalText.replace(/c\..*'/, `span id="${act[0].track.id}"`);
-          finalText = finalText.replace('</c>', '</span>');
-          finalText = finalText.replace(/\n/, '<br>');
-          $('#subtitlesBottom').html(finalText);*/
+  //   if (!l.cueChangeEvent) {
+  //     $("#sub" + l.name).dblclick(function () {
+  //       document.execCommand("copy");
+  //     });
+  //     l.cueChangeEvent = true;
+  //     $scope.video.textTracks[idx].addEventListener("cuechange", function (x) {
+  //       if (l.show && x.target.activeCues.length > 0) {
+  //         /*var act = x.target.activeCues;
+  //         var finalText = "";
+  //         for(var i = 0; i < act.length; i++){
+  //           console.log(act[i]);
+  //           finalText += act[i].text;
+  //         }
+  //         finalText = finalText.replace(/c\..*'/, `span id="${act[0].track.id}"`);
+  //         finalText = finalText.replace('</c>', '</span>');
+  //         finalText = finalText.replace(/\n/, '<br>');
+  //         $('#subtitlesBottom').html(finalText);*/
 
-          $scope.jumpTrackTo(l, x.target.activeCues[0].id);
-        }
-      });
-    }
-  };
+  //         $scope.jumpTrackTo(l, x.target.activeCues[0].id);
+  //       }
+  //     });
+  //   }
+  // };
 
-  $scope.pauseVideo = function () {
-    var play = $("[aria-label=Play]");
-    if (!$scope.video.paused && play.length > 0) {
-      $(play)[0].click();
-    }
-  };
+  // $scope.pauseVideo = function () {
+  //   var play = $("[aria-label=Play]");
+  //   if (!$scope.video.paused && play.length > 0) {
+  //     $(play)[0].click();
+  //   }
+  // };
 
   // $scope.jumpTrackTo = function (lang, trackId, pauseVideo) {
   //   if (pauseVideo) {
@@ -302,23 +302,16 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
   //   }, 1);
   // };
 
-  // TODO: janvi. consider deleting if it's never used.
-  $scope.dispatchMessage = function (data) {
-    if (data.message == "NEW_SUBTITLE") {
-      console.log(`${LANG_TYPE} called NEW_SUBTITLE}`);
-      $scope.newSubtitleRequest(data);
-      // $scope.showDivControllerFirstTime();
-      $scope.applySavedConfigs();
-    } else if (data.message == "RESET") {
-      console.log(`${LANG_TYPE} called RESET}`);
-      $scope.languages = [];
-      subtitleMap = {};
-      // $scope.showDivControllerFirstTime();
-    }
-  };
+  document.addEventListener("RESET", function () {
+    $scope.languages = [];
+    subtitleMap = {};
+    LANG_TYPE = "lang1"; // Connecting Network interception with lang changed in popup.
+    LANGUAGE = ""; // Connecting Network interception with selected lang in Netflix UI.
+    INITIAL_SUBS = "";
+  });
 
-  document.addEventListener("New_Subtitle", function (e) {
-    var { url, data } = e.detail;
+  document.addEventListener("NEW_SUBTITLE", function (e) {
+    var { data } = e.detail;
     if (LANGUAGE === "") {
       INITIAL_SUBS = data;
       console.log(`${LANG_TYPE} first time Netflix loading`);
@@ -409,80 +402,77 @@ Do you want adjust time of subtitle ${languages[1].name} with ${
         if (lang != undefined) {
           $scope.video = $("video")[0];
           $($scope.video).css("height", "100%");
-          addTrackVideo(lang.url, lang.id, lang.id);
+          addTrackVideo(lang.url, lang.id);
           localStorage.removeItem(lang.name);
         }
       }
     });
   }, 5000);
 
-  $scope.receiveMessage = function (event) {
-    if (
-      event.origin !== localStorage.getItem("main_url") ||
-      event.data.secret != "somerandompassword"
-    ) {
-      return;
-    }
-    $scope.dispatchMessage(event.data);
-  };
-  window.addEventListener("message", $scope.receiveMessage, false);
+  // $scope.receiveMessage = function (event) {
+  //   if (
+  //     event.origin !== localStorage.getItem("main_url") ||
+  //     event.data.secret != "somerandompassword"
+  //   ) {
+  //     return;
+  //   }
+  //   $scope.dispatchMessage(event.data);
+  // };
+  // window.addEventListener("message", $scope.receiveMessage, false);
   $scope.bottomPositionNonWesternLanguages = window.screen.availHeight - 150;
   $scope.timeTextTrackDeleted = true;
 
-  $scope.applySavedConfigs = function () {
-    var savedConfig = Object.keys(localStorage).filter(function (e) {
-      return e.startsWith("lang");
-    });
+  // $scope.applySavedConfigs = function () {
+  // var savedConfig = Object.keys(localStorage).filter(function (e) {
+  //   return e.startsWith("lang");
+  // });
+  // $scope.languages.forEach(function (language) {
+  //   // Practicing Language
+  //   if (language.name === "lang1") {
+  //     language.color = PRACTICE_LANG_COLOR;
+  //     language.fontSize = PRACTICE_LANG_FONTSIZE;
+  //     language.position = PRACTICE_LANG_POSITION;
+  //     language.offset = PRACTICE_LANG_OFFSET;
+  //     language.show = true;
+  //   }
+  //   // Native Language
+  //   else if (language.name === "lang2") {
+  //     language.color = NATIVE_LANG_COLOR;
+  //     language.fontSize = NATIVE_LANG_FONTSIZE;
+  //     language.position = NATIVE_LANG_POSITION;
+  //     language.offset = NATIVE_LANG_OFFSET;
+  //     language.show = true;
+  //   }
+  // });
+  // savedConfig.forEach(function (c) {
+  //   var languageName = c.split("-")[0];
+  //   var valueProperty = localStorage.getItem(c);
+  //   if (c.indexOf("-sub-") >= 0 && c.split("-sub-")[1].endsWith(trackId)) {
+  //     $scope.addSubtitleToVideo([valueProperty], languageName);
+  //   }
+  // });
+  // savedConfig.forEach(function (c) {
+  //   var languageName = c.split("-")[0];
+  //   var currentLanguage = $scope.languages.filter(
+  //     (l) => l.name === languageName
+  //   )[0];
+  //   if (currentLanguage != undefined) {
+  //     var valueProperty = localStorage.getItem(c);
+  //     if (c.endsWith("fontSize")) {
+  //       currentLanguage.fontSize = parseInt(valueProperty);
+  //     }
+  //     if (c.endsWith("fontColor")) {
+  //       currentLanguage.color = valueProperty;
+  //     }
+  //     if (c.endsWith("fontPosition")) {
+  //       currentLanguage.position = valueProperty;
+  //       $scope.changePosition(currentLanguage, true);
+  //     }
+  //   }
+  // });
+  // };
 
-    // $scope.languages.forEach(function (language) {
-    //   // Practicing Language
-    //   if (language.name === "lang1") {
-    //     language.color = PRACTICE_LANG_COLOR;
-    //     language.fontSize = PRACTICE_LANG_FONTSIZE;
-    //     language.position = PRACTICE_LANG_POSITION;
-    //     language.offset = PRACTICE_LANG_OFFSET;
-    //     language.show = true;
-    //   }
-    //   // Native Language
-    //   else if (language.name === "lang2") {
-    //     language.color = NATIVE_LANG_COLOR;
-    //     language.fontSize = NATIVE_LANG_FONTSIZE;
-    //     language.position = NATIVE_LANG_POSITION;
-    //     language.offset = NATIVE_LANG_OFFSET;
-    //     language.show = true;
-    //   }
-    // });
-
-    // savedConfig.forEach(function (c) {
-    //   var languageName = c.split("-")[0];
-    //   var valueProperty = localStorage.getItem(c);
-    //   if (c.indexOf("-sub-") >= 0 && c.split("-sub-")[1].endsWith(trackId)) {
-    //     $scope.addSubtitleToVideo([valueProperty], languageName);
-    //   }
-    // });
-
-    // savedConfig.forEach(function (c) {
-    //   var languageName = c.split("-")[0];
-    //   var currentLanguage = $scope.languages.filter(
-    //     (l) => l.name === languageName
-    //   )[0];
-    //   if (currentLanguage != undefined) {
-    //     var valueProperty = localStorage.getItem(c);
-    //     if (c.endsWith("fontSize")) {
-    //       currentLanguage.fontSize = parseInt(valueProperty);
-    //     }
-    //     if (c.endsWith("fontColor")) {
-    //       currentLanguage.color = valueProperty;
-    //     }
-    //     if (c.endsWith("fontPosition")) {
-    //       currentLanguage.position = valueProperty;
-    //       $scope.changePosition(currentLanguage, true);
-    //     }
-    //   }
-    // });
-  };
-
-  $scope.applySavedConfigs();
+  // $scope.applySavedConfigs();
 });
 
 //if page changes then reset controls eg: another episode of a series
@@ -495,6 +485,7 @@ var trackId =
   document.location.toString().match(/.*?\/watch\/(\d+).*/).length > 1
     ? document.location.toString().match(/.*?\/watch\/(\d+).*/)[1]
     : "";
+
 setInterval(function () {
   if (location.href != oldLocation) {
     oldLocation = location.href;
@@ -504,14 +495,7 @@ setInterval(function () {
         ? document.location.toString().match(/.*?\/watch\/(\d+).*/)[1]
         : "";
     if (window.location.toString().indexOf("/watch/") != -1) {
-      window.postMessage(
-        {
-          detail: this.responseText,
-          secret: "somerandompassword",
-          message: "RESET",
-        },
-        document.location.toString()
-      );
+      document.dispatchEvent(new CustomEvent("RESET", {}));
     }
   }
 }, 10);
@@ -529,7 +513,7 @@ function findTrackIndexById(id) {
   return index;
 }
 
-function addTrackVideo(url, label, id) {
+function addTrackVideo(url, id) {
   var video = $("video")[0];
   var track;
   // Before adding a new element with the same ID see if one already exists
@@ -624,19 +608,19 @@ function processSRTToVTT(text, description) {
   return [subtitle, size];
 }
 
-function getUrlVars() {
-  var vars = [],
-    hash;
-  var hashes = window.location.href
-    .slice(window.location.href.indexOf("?") + 1)
-    .split("&");
-  for (var i = 0; i < hashes.length; i++) {
-    hash = hashes[i].split("=");
-    vars.push(hash[0]);
-    vars[hash[0]] = hash[1];
-  }
-  return vars;
-}
+// function getUrlVars() {
+//   var vars = [],
+//     hash;
+//   var hashes = window.location.href
+//     .slice(window.location.href.indexOf("?") + 1)
+//     .split("&");
+//   for (var i = 0; i < hashes.length; i++) {
+//     hash = hashes[i].split("=");
+//     vars.push(hash[0]);
+//     vars[hash[0]] = hash[1];
+//   }
+//   return vars;
+// }
 
 function showControls() {
   const player = document.querySelector('[data-uia="player"]');
@@ -716,30 +700,25 @@ function setLanguage(lang) {
   }
 }
 
-// Define your function
-function myFunction() {
-  chrome.runtime.sendMessage("getLanguages");
-  chrome.runtime.onMessage.addListener((languages) => {
-    if (languages.langPractice) {
-      LANG_TYPE = "lang1";
-      setLanguage(languages.langPractice);
-    }
-    if (languages.langNative) {
-      LANG_TYPE = "lang2";
-      setLanguage(languages.langNative);
-    }
-  });
-}
-
-function checkForElement() {
+// Get langs in storage once Netflix loads.
+function getLangsFromStorage() {
   const element = document.querySelector("div.watch-video--loading-view");
   if (element === null) {
-    // The element is no longer on the page, so call your function
-    myFunction();
+    chrome.runtime.sendMessage("getLanguages");
+    chrome.runtime.onMessage.addListener((languages) => {
+      if (languages.langPractice) {
+        LANG_TYPE = "lang1";
+        setLanguage(languages.langPractice);
+      }
+      if (languages.langNative) {
+        LANG_TYPE = "lang2";
+        setLanguage(languages.langNative);
+      }
+    });
   } else {
-    // The element is still on the page, so check again in 100 milliseconds
-    setTimeout(checkForElement, 100);
+    // Still loading.
+    setTimeout(getLangsFromStorage, 100);
   }
 }
 
-checkForElement();
+getLangsFromStorage();
