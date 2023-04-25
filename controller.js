@@ -216,6 +216,7 @@ setInterval(function () {
         : "";
     if (window.location.toString().indexOf("/watch/") != -1) {
       document.dispatchEvent(new CustomEvent("RESET", {}));
+      getLangsFromStorage();
     }
   }
 }, 10);
@@ -337,7 +338,7 @@ function showControls() {
     clientX: 100, // set the x coordinate of the mouse pointer
     clientY: 200, // set the y coordinate of the mouse pointer
   });
-  player.dispatchEvent(event);
+  player?.dispatchEvent(event);
 }
 
 function showSubtitleSelection() {
@@ -384,6 +385,18 @@ function changeNetflixAudioSubtitle(element, lang) {
   console.log(`Cannot find ${lang} in DOM`);
 }
 
+function getAvailableLanguages() {
+  showSubtitleSelection();
+  var subtitleEl = document.querySelector(
+    'div[data-uia="selector-audio-subtitle"]'
+  ).children[1];
+  const availableLanguages = subtitleEl.innerText
+    .split("\n")
+    .filter((l) => l !== "Subtitles");
+  hideSubtitleSelection();
+  return availableLanguages;
+}
+
 function setLanguage(lang) {
   var errors;
 
@@ -418,9 +431,18 @@ function setLanguage(lang) {
 
 // Get langs in storage once Netflix loads.
 function getLangsFromStorage() {
-  const element = document.querySelector("div.watch-video--loading-view");
-  if (element === null) {
-    chrome.runtime.sendMessage("getLanguages");
+  const loadingVideo = document.querySelector("div.watch-video--loading-view");
+  const videoScreen = document.querySelector("div.watch-video");
+  const isOnVideoScreen = window.location.toString().indexOf("/watch/") != -1;
+  // Don't run when loading.
+  if (!loadingVideo && videoScreen && isOnVideoScreen) {
+    chrome.runtime.sendMessage({ type: "getLanguages" });
+    const availableLanguages = getAvailableLanguages();
+    chrome.runtime.sendMessage({
+      type: "setAvailableLanguages",
+      data: availableLanguages,
+    });
+
     chrome.runtime.onMessage.addListener((languages) => {
       if (languages.langPractice) {
         LANG_TYPE = "lang1";
@@ -436,5 +458,3 @@ function getLangsFromStorage() {
     setTimeout(getLangsFromStorage, 100);
   }
 }
-
-getLangsFromStorage();

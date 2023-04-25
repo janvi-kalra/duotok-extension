@@ -1,5 +1,5 @@
 chrome.runtime.onMessage.addListener(async (message, sender) => {
-  if (message === "getLanguages") {
+  if (message.type === "getLanguages") {
     await chrome.storage.sync.get(["langPractice", "langNative"], (result) => {
       const languages = {
         langPractice: result.langPractice,
@@ -7,5 +7,9 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
       };
       chrome.tabs.sendMessage(sender.tab.id, languages);
     });
+  }
+  if (message.type === "setAvailableLanguages") {
+    await chrome.storage.sync.set({ availableLanguages: message.data });
+    chrome.runtime.lastError;
   }
 });

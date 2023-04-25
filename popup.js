@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  await getAvailableLanguages();
   // On DOM load, set the language in the popup to the language in storage
-  setPracticeLanguage();
-  setNativeLanguage();
+  await setPracticeLanguage();
+  await setNativeLanguage();
 });
 
 // Listen for updates in language popups
@@ -45,4 +46,20 @@ async function setNativeLanguage() {
     await chrome.storage.sync.set({ langPractice: init_native_lang });
   }
   return init_native_lang;
+}
+
+async function getAvailableLanguages() {
+  const availableLanguages = (
+    await chrome.storage.sync.get(["availableLanguages"])
+  ).availableLanguages;
+  const select = document.querySelectorAll("select");
+  // For both languages-native & languages-practice
+  select?.forEach((list) => {
+    availableLanguages?.forEach((l) => {
+      const option = document.createElement("option");
+      option.value = l;
+      option.textContent = l;
+      list.appendChild(option);
+    });
+  });
 }
