@@ -28,8 +28,7 @@
       "matches": ["https://www.netflix.com/*"]
     }
   ],
-  "permissions": ["tabs", "storage"],
-  "host_permissions": ["https://*.nflxvideo.net/*"],
+  "permissions": ["storage"],
   "description": "Learn languages while watching your favorite TV shows on Netflix",
   "icons": {
     "48": "icon48.png",

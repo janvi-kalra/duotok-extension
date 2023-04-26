@@ -120,7 +120,6 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     }
     try {
       $scope.newSubtitleRequest(data);
-      $scope.applySavedConfigs();
     } catch (err) {
       console.log("unable to apply them err:", err);
     }
