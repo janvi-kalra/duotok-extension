@@ -72,3 +72,44 @@ select:hover {
 .select-wrapper select:focus + i {
   color: #2ecc71;
 }
+
+.onoff {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.toggle {
+  width: 40px;
+  height: 20px;
+  background-color: gray;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle:before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-input:checked + .toggle:before {
+  transform: translateX(20px);
+}
+
+.toggle-input:checked + .toggle {
+  background-color: lightgreen;
+}

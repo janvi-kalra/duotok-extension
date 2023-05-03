@@ -63,3 +63,19 @@ async function getAvailableLanguages() {
     });
   });
 }
+
+const toggle = document.querySelector(".toggle-input");
+
+toggle.addEventListener("change", function () {
+  if (toggle.checked) {
+    // Hide Netflix subtitles
+    // Show lang1 & lang2 on the screen
+    console.log("toggle ON");
+  } else {
+    // OFF:
+    // Delete lang1 & lang2 from elements on the screen
+    // Show original Netflix subtitles again
+    // Set audio  back to English?
+    console.log("toggle OFF");
+  }
+});
