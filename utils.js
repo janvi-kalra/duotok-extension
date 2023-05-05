@@ -12,12 +12,38 @@ function convertTimeToHHMMSS(secs) {
   return toHHMMSS(secs);
 }
 
-function constructBlobURL(subtitle) {
-  var url = URL.createObjectURL(new Blob([subtitle], { type: "text/vtt" }));
-  return url.toString();
+// function constructBlobURL(subtitle) {
+//   var url = URL.createObjectURL(new Blob([subtitle], { type: "text/vtt" }));
+//   return url.toString();
+// }
+
+// function parse(content, type) {
+//   var dom = new DOMParser();
+//   return dom.parseFromString(content, "text/xml");
+// }
+function formatTimeTrack(time) {
+  var divider = 1000 * 1000 * 10;
+  // First make time to HHMMSS
+  if (isFormatTimeStamp(time)) {
+    time = time.replace(/[^\d]/g, "") / divider;
+    time = convertTimeToHHMMSS(time);
+  }
+  // Then convert to seconds
+  return parseTime(time);
 }
 
-function parse(content, type) {
-  var dom = new DOMParser();
-  return dom.parseFromString(content, "text/xml");
+function isFormatTimeStamp(time) {
+  var regex_hh_mm_ss_ttt = /\d{2}:\d{2}:\d{2}\.\d{3}/;
+  var isFormatTimeStamp = time.match(regex_hh_mm_ss_ttt) == undefined;
+  return isFormatTimeStamp;
+}
+
+function parseTime(timeString) {
+  const timeParts = timeString.split(":");
+  const hours = parseInt(timeParts[0]);
+  const minutes = parseInt(timeParts[1]);
+  const secondsParts = timeParts[2].split(".");
+  const seconds = parseInt(secondsParts[0]);
+  const milliseconds = parseInt(secondsParts[1]);
+  return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
 }

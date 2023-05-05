@@ -47,9 +47,13 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     console.log(
       `${LANG_TYPE} received new subtitle request for ${description}`
     );
-    // var sub = processDXFPToVTT(data, description);
 
-    parseXMLSubtitles(data);
+    const parsedSubtitles = parseXMLSubtitles(data);
+    if (LANG_TYPE === "lang1") {
+      subtitlesPractice = parsedSubtitles;
+    } else {
+      subtitlesNative = parsedSubtitles;
+    }
 
     // var video = $("video");
     // var half =
@@ -129,6 +133,7 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
 
   chrome.storage.onChanged.addListener((changes) => {
     for (let [langType, { oldValue, newValue }] of Object.entries(changes)) {
+      // NOTE: take away the use of lang1/2, just have a variable called - "currentSubs" that I update here based on what changed.
       if (langType === "langPractice") {
         LANG_TYPE = "lang1";
       }
@@ -181,7 +186,8 @@ var trackId =
   document.location.toString().match(/.*?\/watch\/(\d+).*/).length > 1
     ? document.location.toString().match(/.*?\/watch\/(\d+).*/)[1]
     : "";
-var globalSubtitles = [];
+var subtitlesPractice = [];
+var subtitlesNative = [];
 
 setInterval(function () {
   if (location.href != oldLocation) {
@@ -267,23 +273,6 @@ setInterval(function () {
 //   }
 //   return [subtitle, subtitles.length];
 // }
-
-function formatTimeTrack(time) {
-  var divider = 1000 * 1000 * 10;
-  // First make time to HHMMSS
-  if (isFormatTimeStamp(time)) {
-    time = time.replace(/[^\d]/g, "") / divider;
-    time = convertTimeToHHMMSS(time);
-  }
-  // Then convert to seconds
-  return parseTime(time);
-}
-
-function isFormatTimeStamp(time) {
-  var regex_hh_mm_ss_ttt = /\d{2}:\d{2}:\d{2}\.\d{3}/;
-  var isFormatTimeStamp = time.match(regex_hh_mm_ss_ttt) == undefined;
-  return isFormatTimeStamp;
-}
 
 // function processSRTToVTT(text, description) {
 //   var subtitle = "WEBVTT FILE\n\n";
@@ -442,7 +431,7 @@ function parseXMLSubtitles(xmlText) {
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(xmlText, "text/xml");
 
-  globalSubtitles = Array.from(xmlDoc.getElementsByTagName("p")).map(
+  const subtitles = Array.from(xmlDoc.getElementsByTagName("p")).map(
     (subtitleNode) => {
       const startTimeStr = subtitleNode.getAttribute("begin").replace("t", "");
       const endTimeStr = subtitleNode.getAttribute("end").replace("t", "");
@@ -454,45 +443,65 @@ function parseXMLSubtitles(xmlText) {
       };
     }
   );
+  return subtitles;
 }
 
-function parseTime(timeString) {
-  const timeParts = timeString.split(":");
-  const hours = parseInt(timeParts[0]);
-  const minutes = parseInt(timeParts[1]);
-  const secondsParts = timeParts[2].split(".");
-  const seconds = parseInt(secondsParts[0]);
-  const milliseconds = parseInt(secondsParts[1]);
-  return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
-}
-
-function showSubtitle(currentTime) {
-  const subtitles = globalSubtitles;
+function updateSubtitle(subtitleEl, currentTime, subtitles) {
+  if (!subtitleEl || !subtitles) {
+    return;
+  }
   // Find the subtitle that matches the current time
   const currentSubtitle = subtitles.find((subtitle) => {
     return currentTime >= subtitle.startTime && currentTime < subtitle.endTime;
   });
 
-  // Display the current subtitle in the subtitle div
-  let subtitleDiv = document.getElementById("mainSub");
-
-  if (!subtitleDiv) {
-    addDuotokLayer();
-    subtitleDiv = document.getElementById("mainSub");
+  if (currentSubtitle) {
+    subtitleEl.querySelector(".textBasedSub").innerText = currentSubtitle.text;
+  } else {
+    subtitleEl.querySelector(".textBasedSub").innerText = "";
   }
-
-  // if (currentSubtitle) {
-  //   subtitleDiv.childNodes[0].innerHTML = currentSubtitle.text;
-  // } else {
-  //   subtitleDiv.childNodes[0].innerHTML = "";
-  // }
 }
 
-// Call the showSubtitle function periodically with the current time of your video player
 setInterval(() => {
   const video = document.querySelector("video");
   if (!video) {
     return;
   }
-  showSubtitle(video.currentTime);
+  let practiceSub = document.getElementById("practiceSub");
+  let nativeSub = document.getElementById("nativeSub");
+
+  // TODO: Remove this block. Instead, on document load, add the duotok layer with the appropriate settings (from storage)
+  if (!practiceSub || !nativeSub) {
+    addDuotokLayer();
+  }
+
+  updateSubtitle(practiceSub, video.currentTime, subtitlesPractice);
+  updateSubtitle(nativeSub, video.currentTime, subtitlesNative);
 }, 100);
+
+// function formatTimeTrack(time) {
+//   var divider = 1000 * 1000 * 10;
+//   // First make time to HHMMSS
+//   if (isFormatTimeStamp(time)) {
+//     time = time.replace(/[^\d]/g, "") / divider;
+//     time = convertTimeToHHMMSS(time);
+//   }
+//   // Then convert to seconds
+//   return parseTime(time);
+// }
+
+// function isFormatTimeStamp(time) {
+//   var regex_hh_mm_ss_ttt = /\d{2}:\d{2}:\d{2}\.\d{3}/;
+//   var isFormatTimeStamp = time.match(regex_hh_mm_ss_ttt) == undefined;
+//   return isFormatTimeStamp;
+// }
+
+// function parseTime(timeString) {
+//   const timeParts = timeString.split(":");
+//   const hours = parseInt(timeParts[0]);
+//   const minutes = parseInt(timeParts[1]);
+//   const secondsParts = timeParts[2].split(".");
+//   const seconds = parseInt(secondsParts[0]);
+//   const milliseconds = parseInt(secondsParts[1]);
+//   return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
+// }

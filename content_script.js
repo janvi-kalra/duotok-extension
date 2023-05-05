@@ -30,19 +30,17 @@ function addDuotokLayer() {
 
   const subtitlesHTML = `
     <div style="position: absolute; text-align: center; margin-bottom: 100px"> 
-      <div id="mainSub" style="display: flex; flex-direction: column; align-items: center;">
+      <div id="practiceSub" style="display: flex; flex-direction: column; align-items: center;">
         <div class="textBasedSub" style="font-size: 16px; font-weight: 600; 
         font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
         text-align: center; background-color: rgba(0, 0, 0, 0);">
-          this is practice language subtitle
         </div>
       </div>
 
-      <div id="secondSub" style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
+      <div id="nativeSub" style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
         <div class="textBasedSub" style="font-size: 16px; font-weight: 600; 
         font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
         text-align: center; background-color: rgba(0, 0, 0, 0);">
-          this is native language subtitle
         </div>
       </div>
     </div> 
