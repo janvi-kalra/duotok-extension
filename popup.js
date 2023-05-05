@@ -5,33 +5,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   // On DOM load, set the language in the popup to the language in storage
   await setPracticeLanguage();
   await setNativeLanguage();
+  await setDuotokEnabled();
 });
 
-// Listen for updates in language popups
-document
-  .getElementById("languages-practice")
-  .addEventListener("change", async (event) => {
-    console.log(`Changed PRACTICE language to ${event.target.value}`);
-    await chrome.storage.sync.set({ langPractice: event.target.value });
-    updateMoreShowsSubtitle(event.target.value);
-  });
+listenForUpdatesInPopupSettings();
 
-document
-  .getElementById("languages-native")
-  .addEventListener("change", async (event) => {
-    console.log(`Changed NATIVE language to ${event.target.value}`);
-    await chrome.storage.sync.set({ langNative: event.target.value });
-  });
+function listenForUpdatesInPopupSettings() {
+  document
+    .getElementById("languages-practice")
+    .addEventListener("change", async (event) => {
+      console.log(`Changed PRACTICE language to ${event.target.value}`);
+      await chrome.storage.sync.set({ langPractice: event.target.value });
+      updateMoreShowsSubtitle(event.target.value);
+    });
 
-// Update duotok on/off
-const toggle = document.querySelector(".toggle-input");
-toggle.addEventListener("change", async () => {
-  if (toggle.checked) {
-    await chrome.storage.sync.set({ duotokON: true });
+  document
+    .getElementById("languages-native")
+    .addEventListener("change", async (event) => {
+      console.log(`Changed NATIVE language to ${event.target.value}`);
+      await chrome.storage.sync.set({ langNative: event.target.value });
+    });
+
+  const toggle = document.querySelector(".toggle-input");
+  toggle.addEventListener("change", async () => {
+    await chrome.storage.sync.set({ duotokEnabled: toggle.checked });
+  });
+}
+
+async function setDuotokEnabled() {
+  var init_value = true; // On installation, duotok is on.
+  const duotokEnabled = await chrome.storage.sync.get(["duotokEnabled"]);
+  if (duotokEnabled) {
+    document.querySelector(".toggle-input").checked =
+      duotokEnabled.duotokEnabled;
   } else {
-    await chrome.storage.sync.set({ duotokON: false });
+    await chrome.storage.sync.set({ duotokEnabled: init_value });
   }
-});
+}
 
 async function setPracticeLanguage() {
   var init_practice_lang = "Spanish"; // Default practice language

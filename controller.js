@@ -212,33 +212,37 @@ function setLanguage(lang) {
   }
 }
 
-// Get langs in storage once Netflix loads.
-function getLangsFromStorage() {
+function initialSetup() {
   const loadingVideo = document.querySelector("div.watch-video--loading-view");
   const videoScreen = document.querySelector("div.watch-video");
   const isOnVideoScreen = window.location.toString().indexOf("/watch/") != -1;
-  // Don't run when loading.
+
   if (!loadingVideo && videoScreen && isOnVideoScreen) {
-    chrome.runtime.sendMessage({ type: "getLanguages" });
+    chrome.runtime.sendMessage({ type: "getInitialSetup" });
     const availableLanguages = getAvailableLanguages();
     chrome.runtime.sendMessage({
       type: "setAvailableLanguages",
       data: availableLanguages,
     });
 
-    chrome.runtime.onMessage.addListener((languages) => {
-      if (languages.langPractice) {
-        LANG_TYPE = "lang1";
-        setLanguage(languages.langPractice);
+    chrome.runtime.onMessage.addListener((settings) => {
+      if (!settings.duotokEnabled) {
+        return;
       }
-      if (languages.langNative) {
+      addDuotokLayer();
+      if (settings.langPractice) {
+        LANG_TYPE = "lang1";
+        setLanguage(settings.langPractice);
+      }
+      if (settings.langNative) {
         LANG_TYPE = "lang2";
-        setLanguage(languages.langNative);
+        setLanguage(settings.langNative);
       }
     });
   } else {
     // Still loading.
-    setTimeout(getLangsFromStorage, 100);
+    // TODO: Make this a mutation observer. Will be more efficient.
+    setTimeout(initialSetup, 100);
   }
 }
 
@@ -277,6 +281,7 @@ function updateSubtitle(subtitleEl, currentTime, subtitles) {
   }
 }
 
+initialSetup();
 setInterval(() => {
   const video = document.querySelector("video");
   if (!video) {

@@ -13,12 +13,6 @@ s.onload = function () {
 //  Also, stop paying for Typeform!
 // TODO: Add different files for the content script / code for each component. Example -- files for the flow of the toggle.
 
-let duotokEnabled = true;
-
-if (duotokEnabled) {
-  addDuotokLayer();
-}
-
 function addDuotokLayer() {
   const duotokEl = document.createElement("div");
   duotokEl.style.height = "100%";
@@ -29,16 +23,17 @@ function addDuotokLayer() {
   duotokEl.style.alignItems = "flex-end";
 
   const subtitlesHTML = `
-    <div style="position: absolute; text-align: center; margin-bottom: 100px"> 
+    <div style="position: absolute; text-align: center; margin-bottom: 200px"> 
       <div id="practiceSub" style="display: flex; flex-direction: column; align-items: center;">
-        <div class="textBasedSub" style="font-size: 16px; font-weight: 600; 
+        <div class="textBasedSub" style="font-size: 40px; font-weight: 600; 
         font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
+        text-shadow: 0px 4px 7px rgba(18, 18, 18, 1);
         text-align: center; background-color: rgba(0, 0, 0, 0);">
         </div>
       </div>
 
       <div id="nativeSub" style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
-        <div class="textBasedSub" style="font-size: 16px; font-weight: 600; 
+        <div class="textBasedSub" style="font-size: 20px; font-weight: 600; 
         font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
         text-align: center; background-color: rgba(0, 0, 0, 0);">
         </div>
