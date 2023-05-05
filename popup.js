@@ -1,3 +1,5 @@
+import { other_netflix_shows } from "./other_netflix_shows.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   await getAvailableLanguages();
   // On DOM load, set the language in the popup to the language in storage
@@ -11,6 +13,7 @@ document
   .addEventListener("change", async (event) => {
     console.log(`Changed PRACTICE language to ${event.target.value}`);
     await chrome.storage.sync.set({ langPractice: event.target.value });
+    updateMoreShowsSubtitle(event.target.value);
   });
 
 document
@@ -19,6 +22,16 @@ document
     console.log(`Changed NATIVE language to ${event.target.value}`);
     await chrome.storage.sync.set({ langNative: event.target.value });
   });
+
+// Update duotok on/off
+const toggle = document.querySelector(".toggle-input");
+toggle.addEventListener("change", async () => {
+  if (toggle.checked) {
+    await chrome.storage.sync.set({ duotokON: true });
+  } else {
+    await chrome.storage.sync.set({ duotokON: false });
+  }
+});
 
 async function setPracticeLanguage() {
   var init_practice_lang = "Spanish"; // Default practice language
@@ -31,6 +44,7 @@ async function setPracticeLanguage() {
   } else {
     await chrome.storage.sync.set({ langPractice: init_practice_lang });
   }
+  updateMoreShowsSubtitle(init_practice_lang);
   return init_practice_lang;
 }
 
@@ -64,18 +78,8 @@ async function getAvailableLanguages() {
   });
 }
 
-const toggle = document.querySelector(".toggle-input");
-
-toggle.addEventListener("change", function () {
-  if (toggle.checked) {
-    // Hide Netflix subtitles
-    // Show lang1 & lang2 on the screen
-    console.log("toggle ON");
-  } else {
-    // OFF:
-    // Delete lang1 & lang2 from elements on the screen
-    // Show original Netflix subtitles again
-    // Set audio  back to English?
-    console.log("toggle OFF");
-  }
-});
+function updateMoreShowsSubtitle(practiceLanguage) {
+  var subtitle = document.querySelector(".subtitle");
+  var linkToMore = other_netflix_shows[practiceLanguage];
+  subtitle.innerHTML = `Want to watching something else? <a target='blank' href=${linkToMore}>Here</a> are more shows that support learning ${practiceLanguage}`;
+}

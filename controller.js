@@ -60,6 +60,7 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     ) {
       $scope.addSubtitleToVideo(sub, description);
     }
+    updateNetflixTrack();
     console.log(`${LANG_TYPE} completed adding new subtitle`);
   };
 
@@ -142,37 +143,11 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     }
   });
 
-  $interval(function () {
-    $scope.applySavedConfigs();
-  }, 100);
+  // $interval(function () {
+  //   $scope.applySavedConfigs();
+  // }, 100);
 
-  $interval(function () {
-    var timeTextTrack = ".image-based-timed-text svg";
-    if ($(timeTextTrack).length > 0 && $scope.timeTextTrackDeleted) {
-      var target = document.querySelector(timeTextTrack);
-      if (target != undefined) {
-        var observer = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            if (
-              mutation.addedNodes != undefined &&
-              mutation.addedNodes.length > 0 &&
-              mutation.addedNodes[0].nodeName == "image"
-            ) {
-              mutation.addedNodes[0].setAttribute(
-                "y",
-                $scope.nonWesternLanguagesPosition || 50
-              );
-            }
-          });
-        });
-        var config = { childList: true };
-        observer.observe(target, config);
-        $scope.timeTextTrackDeleted = false;
-      }
-    } else {
-      $scope.timeTextTrackDeleted = true;
-    }
-
+  function updateNetflixTrack() {
     var subs = Object.keys(localStorage).filter(function (e) {
       return e.match(/lang\d-sub-load/);
     });
@@ -182,12 +157,57 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
         if (lang != undefined) {
           $scope.video = $("video")[0];
           $($scope.video).css("height", "100%");
+          
           addTrackVideo(lang.url, lang.id);
           localStorage.removeItem(lang.name);
         }
       }
     });
-  }, 5000);
+  }
+
+  // $interval(function () {
+  //   // var timeTextTrack = ".image-based-timed-text svg";
+  //   // // if ($(timeTextTrack).length > 0 && $scope.timeTextTrackDeleted) {
+  //   // //   console.log("IT CAME HERE ONCE");
+  //   // //   var target = document.querySelector(timeTextTrack);
+  //   // //   if (target != undefined) {
+  //   // //     var observer = new MutationObserver(function (mutations) {
+  //   // //       mutations.forEach(function (mutation) {
+  //   // //         if (
+  //   // //           mutation.addedNodes != undefined &&
+  //   // //           mutation.addedNodes.length > 0 &&
+  //   // //           mutation.addedNodes[0].nodeName == "image"
+  //   // //         ) {
+  //   // //           mutation.addedNodes[0].setAttribute(
+  //   // //             "y",
+  //   // //             $scope.nonWesternLanguagesPosition || 50
+  //   // //           );
+  //   // //         }
+  //   // //       });
+  //   // //     });
+  //   // //     var config = { childList: true };
+  //   // //     observer.observe(target, config);
+  //   // //     $scope.timeTextTrackDeleted = false;
+  //   // //   }
+  //   // // } else {
+  //   // //   $scope.timeTextTrackDeleted = true;
+  //   // // }
+
+  //   var subs = Object.keys(localStorage).filter(function (e) {
+  //     return e.match(/lang\d-sub-load/);
+  //   });
+  //   subs.forEach(function (lang) {
+  //     var lang = JSON.parse(localStorage.getItem(lang));
+  //     if ($("video").length > 0) {
+  //       if (lang != undefined) {
+  //         $scope.video = $("video")[0];
+  //         $($scope.video).css("height", "100%");
+  //         addTrackVideo(lang.url, lang.id);
+  //         localStorage.removeItem(lang.name);
+  //       }
+  //     }
+  //   });
+  // }, 5000);
 
   $scope.bottomPositionNonWesternLanguages = window.screen.availHeight - 150;
   $scope.timeTextTrackDeleted = true;
