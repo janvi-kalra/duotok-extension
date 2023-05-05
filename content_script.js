@@ -5,15 +5,12 @@ s.onload = function () {
 };
 (document.head || document.documentElement).appendChild(s);
 
-// TODO(janvi): Have a message on the content script that goes "is it enabled?" -> goes to background script that
-// asks if it's on/off -> background script sends a boolean response which you use to update "duotokEnabled".
-// Then - in popup whenever you turn on/off, reload the Netflix page for simplicity for now.
-
 // BUG: Doesn't get the languages if you install the extension while watching a Netflix show. Unable to grab all the potential languages.
 //  Also, stop paying for Typeform!
 // TODO: Add different files for the content script / code for each component. Example -- files for the flow of the toggle.
 
 function addDuotokLayer() {
+  hideOriginalNetflixSubtitles();
   const duotokEl = document.createElement("div");
   duotokEl.style.height = "100%";
   duotokEl.style.width = "100%";

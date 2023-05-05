@@ -62,13 +62,16 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   });
 
   chrome.storage.onChanged.addListener((changes) => {
-    for (let [langType, { oldValue, newValue }] of Object.entries(changes)) {
+    for (let [item, { oldValue, newValue }] of Object.entries(changes)) {
       // NOTE: take away the use of lang1/2, just have a variable called - "currentSubs" that I update here based on what changed.
-      if (langType === "langPractice") {
+      if (item === "langPractice") {
         LANG_TYPE = "lang1";
       }
-      if (langType === "langNative") {
+      if (item === "langNative") {
         LANG_TYPE = "lang2";
+      }
+      if (item === "duotokEnabled") {
+        chrome.runtime.sendMessage({ type: "RELOAD" });
       }
       console.log(`${LANG_TYPE} changed from ${oldValue} to ${newValue}`);
       setLanguage(newValue);
@@ -107,7 +110,7 @@ setInterval(function () {
         : "";
     if (window.location.toString().indexOf("/watch/") != -1) {
       document.dispatchEvent(new CustomEvent("RESET", {}));
-      getLangsFromStorage();
+      initialSetup();
     }
   }
 }, 10);
@@ -227,8 +230,10 @@ function initialSetup() {
 
     chrome.runtime.onMessage.addListener((settings) => {
       if (!settings.duotokEnabled) {
+        showOriginalNetflixSubtitles();
         return;
       }
+      // Hide original Netflix subtitles
       addDuotokLayer();
       if (settings.langPractice) {
         LANG_TYPE = "lang1";
@@ -298,3 +303,18 @@ setInterval(() => {
   updateSubtitle(practiceSub, video.currentTime, subtitlesPractice);
   updateSubtitle(nativeSub, video.currentTime, subtitlesNative);
 }, 100);
+
+function showOriginalNetflixSubtitles() {
+  document.querySelector(".player-timedtext-text-container").style.display =
+    "none !important";
+}
+
+function hideOriginalNetflixSubtitles() {
+  document.querySelector(".player-timedtext-text-container").style.display =
+    "block !important";
+}
+
+// function hideDuotokSubtitles() {
+//   document.querySelector(".player-timedtext-text-container").style.display =
+//     "block !important";
+// }

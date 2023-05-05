@@ -11,20 +11,16 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
         chrome.tabs.sendMessage(sender.tab.id, settings);
       }
     );
+    return true;
   }
   if (message.type === "setAvailableLanguages") {
     await chrome.storage.sync.set({ availableLanguages: message.data });
+    return true;
+  }
+  if (message.type === "RELOAD") {
+    chrome.tabs.reload();
   }
 });
-
-// chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-//   if (message.type === "isDuotokEnabled") {
-//     const isDuotokEnabled = (await chrome.storage.sync.get(["duotokON"]))
-//       .duotokON;
-//     sendResponse({ response: "Message received" });
-//     return true;
-//   }
-// });
 
 // Get feedback on uninstall.
 chrome.runtime.setUninstallURL("https://neyxaiuqdgy.typeform.com/to/jlwxlHC2");
