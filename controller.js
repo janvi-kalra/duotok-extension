@@ -477,15 +477,15 @@ function showSubtitle(currentTime) {
   let subtitleDiv = document.getElementById("mainSub");
 
   if (!subtitleDiv) {
-    createPracticeSubtitle();
+    addDuotokLayer();
     subtitleDiv = document.getElementById("mainSub");
   }
 
-  if (currentSubtitle) {
-    subtitleDiv.childNodes[0].innerHTML = currentSubtitle.text;
-  } else {
-    subtitleDiv.childNodes[0].innerHTML = "";
-  }
+  // if (currentSubtitle) {
+  //   subtitleDiv.childNodes[0].innerHTML = currentSubtitle.text;
+  // } else {
+  //   subtitleDiv.childNodes[0].innerHTML = "";
+  // }
 }
 
 // Call the showSubtitle function periodically with the current time of your video player

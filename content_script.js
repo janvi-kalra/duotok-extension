@@ -16,70 +16,42 @@ s.onload = function () {
 let duotokEnabled = true;
 
 if (duotokEnabled) {
-  createPracticeSubtitle();
-  createNativeSubtitle();
+  addDuotokLayer();
 }
 
-function createPracticeSubtitle() {
-  // create the outermost div element
-  const mainSub = document.createElement("div");
-  mainSub.id = "mainSub";
-  mainSub.style.left = "210.652px";
-  mainSub.style.right = "0px";
-  mainSub.style.display = "flex";
-  mainSub.style.flexDirection = "column";
-  mainSub.style.alignItems = "center";
-  mainSub.style.position = "absolute";
-  mainSub.style.width = "318.695px";
-  mainSub.style.top = "665.623px";
+function addDuotokLayer() {
+  const duotokEl = document.createElement("div");
+  duotokEl.style.height = "100%";
+  duotokEl.style.width = "100%";
+  duotokEl.style.display = "flex";
+  duotokEl.style.position = "relative";
+  duotokEl.style.justifyContent = "center";
+  duotokEl.style.alignItems = "flex-end";
 
-  // create the inner div element
-  const textBasedSub = document.createElement("div");
-  textBasedSub.classList.add("textBasedSub");
-  textBasedSub.style.fontSize = "26.2237px";
-  textBasedSub.style.fontWeight = "500";
-  textBasedSub.style.fontFamily =
-    '"Netflix Sans", "Helvetica Neue", "Segoe UI", Roboto, Ubuntu, sans-serif';
-  textBasedSub.style.color = "rgb(255, 255, 255)";
-  textBasedSub.style.backgroundColor = "rgba(219, 0, 0, 0)";
+  const subtitlesHTML = `
+    <div style="position: absolute; text-align: center; margin-bottom: 100px"> 
+      <div id="mainSub" style="display: flex; flex-direction: column; align-items: center;">
+        <div class="textBasedSub" style="font-size: 16px; font-weight: 600; 
+        font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
+        text-align: center; background-color: rgba(0, 0, 0, 0);">
+          this is practice language subtitle
+        </div>
+      </div>
 
-  // append the inner div to the outermost div
-  mainSub.appendChild(textBasedSub);
+      <div id="secondSub" style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
+        <div class="textBasedSub" style="font-size: 16px; font-weight: 600; 
+        font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
+        text-align: center; background-color: rgba(0, 0, 0, 0);">
+          this is native language subtitle
+        </div>
+      </div>
+    </div> 
+  `;
 
-  // add the element to the document body
-  const video = document.querySelector("video");
-  if (video?.parentNode) {
-    video.parentNode.appendChild(mainSub);
-  }
-}
+  duotokEl.innerHTML = subtitlesHTML;
 
-function createNativeSubtitle() {
-  // create the outermost div element
-  const secondSub = document.createElement("div");
-  secondSub.id = "secondSub";
-  secondSub.style.left = "269.883px";
-  secondSub.style.right = "0px";
-  secondSub.style.display = "flex";
-  secondSub.style.flexDirection = "column";
-  secondSub.style.alignItems = "center";
-  secondSub.style.position = "absolute";
-  secondSub.style.width = "200.234px";
-  secondSub.style.top = "708.481px";
-
-  // create the inner div element
-  const textBasedSub = document.createElement("div");
-  textBasedSub.classList.add("textBasedSub");
-  textBasedSub.style.fontSize = "14.985px";
-  textBasedSub.style.fontWeight = "500";
-  textBasedSub.style.fontFamily = "Arial, sans-serif";
-  textBasedSub.style.color = "rgb(255, 255, 255)";
-  textBasedSub.style.backgroundColor = "rgba(0, 0, 0, 0)";
-
-  // append the inner div to the outermost div
-  secondSub.appendChild(textBasedSub);
-
-  const video = document.querySelector("video");
-  if (video?.parentNode) {
-    video.parentNode.appendChild(secondSub);
+  const timedTextEl = document.querySelector(".player-timedtext");
+  if (timedTextEl) {
+    timedTextEl.insertAdjacentElement("afterend", duotokEl);
   }
 }
