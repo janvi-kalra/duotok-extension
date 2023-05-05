@@ -12,15 +12,6 @@ function convertTimeToHHMMSS(secs) {
   return toHHMMSS(secs);
 }
 
-// function constructBlobURL(subtitle) {
-//   var url = URL.createObjectURL(new Blob([subtitle], { type: "text/vtt" }));
-//   return url.toString();
-// }
-
-// function parse(content, type) {
-//   var dom = new DOMParser();
-//   return dom.parseFromString(content, "text/xml");
-// }
 function formatTimeTrack(time) {
   var divider = 1000 * 1000 * 10;
   // First make time to HHMMSS
