@@ -26,6 +26,9 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
       subtitlesNative = parsedSubtitles;
     }
 
+    // var allText = "";
+    // parsedSubtitles.map((line) => (allText = `${allText} + ${line.text}`));
+
     console.log(`${LANG_TYPE} completed adding new subtitle`);
   };
 
@@ -178,7 +181,7 @@ function getAvailableLanguages() {
   ).children[1];
   const availableLanguages = subtitleEl.innerText
     .split("\n")
-    .filter((l) => l !== "Subtitles");
+    .filter((l) => l !== "Subtitles" && !l.includes("(CC)"));
   hideSubtitleSelection();
   return availableLanguages;
 }
@@ -259,7 +262,11 @@ function parseXMLSubtitles(xmlText) {
     (subtitleNode) => {
       const startTimeStr = subtitleNode.getAttribute("begin").replace("t", "");
       const endTimeStr = subtitleNode.getAttribute("end").replace("t", "");
-      const text = subtitleNode.textContent;
+      const spans = subtitleNode.querySelectorAll("span");
+      let text = "";
+      for (let span of spans) {
+        text += `${span.textContent} `;
+      }
       return {
         startTime: formatTimeTrack(startTimeStr),
         endTime: formatTimeTrack(endTimeStr),
@@ -305,16 +312,15 @@ setInterval(() => {
 }, 100);
 
 function showOriginalNetflixSubtitles() {
-  document.querySelector(".player-timedtext-text-container").style.display =
-    "none !important";
+  // const textContainer = document.querySelector(".player-timedtext-text-container");
+  // if (textContainer) {
+  //   textContainer.style?.display = "none !important";
+  // }
 }
 
 function hideOriginalNetflixSubtitles() {
-  document.querySelector(".player-timedtext-text-container").style.display =
-    "block !important";
+  // const textContainer = document.querySelector(".player-timedtext-text-container");
+  // if (textContainer) {
+  //   textContainer.style?.display = "block !important";
+  // }
 }
-
-// function hideDuotokSubtitles() {
-//   document.querySelector(".player-timedtext-text-container").style.display =
-//     "block !important";
-// }

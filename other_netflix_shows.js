@@ -31,9 +31,9 @@ export const other_netflix_shows = {
   SimplifiedChinese:
     "https://www.netflix.com/browse/subtitles/81582910/zh-hans",
   Spanish: "https://www.netflix.com/browse/subtitles/81582672/es",
-  Swedish: "https://www.netflix.com/browse/subtitles/81506256/sv",
+  Swedish: "https://www.netflix.com/browse/subtitles/81506257/sv",
   Swahili: "https://www.netflix.com/browse/subtitles/81511527/sw",
-  Thai: "https://www.netflix.com/browse/subtitles/81510633/th",
+  Thai: "https://www.netflix.com/browse/subtitles/81511372/th",
   Tamil: "https://www.netflix.com/browse/subtitles/81508170/ta",
   TraditionalChinese:
     "https://www.netflix.com/browse/subtitles/81586250/zh-hant",

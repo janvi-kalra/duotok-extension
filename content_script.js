@@ -21,11 +21,15 @@ function addDuotokLayer() {
 
   const subtitlesHTML = `
     <div style="position: absolute; text-align: center; margin-bottom: 200px"> 
-      <div id="practiceSub" style="display: flex; flex-direction: column; align-items: center;">
+      <div id="practiceSub" style="display: flex; flex-direction: column; align-items: center; pointer-events: auto;">
         <div class="textBasedSub" style="font-size: 40px; font-weight: 600; 
         font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
         text-shadow: 0px 4px 7px rgba(18, 18, 18, 1);
         text-align: center; background-color: rgba(0, 0, 0, 0);">
+        </div>
+        <div id="definitionOverlay" 
+          style="position: absolute; top: 0; left: 0; display: none; 
+          background-color: rgba(0, 0, 0, 0.5); color: #fff; padding: 10px; font-size: 18px;">
         </div>
       </div>
 
@@ -44,4 +48,17 @@ function addDuotokLayer() {
   if (timedTextEl) {
     timedTextEl.insertAdjacentElement("afterend", duotokEl);
   }
+
+  // const textDiv = document.querySelector(".textBasedSub");
+  // const overlayDiv = document.getElementById("definitionOverlay");
+  // const definition = 'The definition of the word "text".';
+
+  // textDiv.addEventListener("pointerover", () => {
+  //   overlayDiv.style.display = "block";
+  //   overlayDiv.innerText = definition;
+  // });
+
+  // textDiv.addEventListener("pointerout", () => {
+  //   overlayDiv.style.display = "none";
+  // });
 }
