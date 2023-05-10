@@ -22,22 +22,19 @@ function addDuotokLayer() {
 
   const subtitlesHTML = `
     <div style="position: absolute; text-align: center; margin-bottom: 200px; z-index: 1;"> 
-      <div id="practiceSub" style="display: flex; flex-direction: column; align-items: center; pointer-events: auto;">
-        <div class="textBasedSub" style="font-size: 40px; font-weight: 600; 
-        font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
-        text-shadow: 0px 4px 7px rgba(18, 18, 18, 1);
-        text-align: center; background-color: rgba(0, 0, 0, 0);">
+      <div id="practiceSub">
+        <div class="sentenceContainer" >
         </div>
-        <div id="definitionOverlay" 
-          style="position: absolute; top: 0; left: 0; display: none; 
-          background-color: rgba(0, 0, 0, 0.5); color: #fff; padding: 10px; font-size: 18px;">
+
+        <div id="definitionPopup">
+          <h3 id="wordDefinition"></h3>
+          <p id="partOfSpeech"></p>
+          <p id="exampleSentence"></p>
         </div>
       </div>
 
-      <div id="nativeSub" style="display: flex; flex-direction: column; align-items: center; margin-top: 12px;">
-        <div class="textBasedSub" style="font-size: 20px; font-weight: 600; 
-        font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
-        text-align: center; background-color: rgba(0, 0, 0, 0);">
+      <div id="nativeSub">
+        <div class="nativeSubText">
         </div>
       </div>
     </div> 
@@ -50,19 +47,57 @@ function addDuotokLayer() {
     watchVideoEl.insertAdjacentElement("afterbegin", duotokEl);
   }
 
-  // Then in background script make the API calls.
-  // Add mutation observer.
-  const practiceDiv = document.getElementById("practiceSub");
-  const textDiv = document.querySelector(".textBasedSub");
-  const overlayDiv = document.getElementById("definitionOverlay");
-  const definition = 'The definition of the word "text".';
+  const words = document.getElementsByClassName("word");
 
-  practiceDiv.addEventListener("pointerover", () => {
-    overlayDiv.style.display = "block";
-    overlayDiv.innerText = definition;
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    addWordListeners(word);
+  }
+}
+
+function addWordListeners(wordElement) {
+  wordElement.addEventListener("pointerover", function () {
+    document.querySelector("video").pause();
+    const definitionPopup = document.getElementById("definitionPopup");
+    const wordDefinition = document.getElementById("wordDefinition");
+    const partOfSpeech = document.getElementById("partOfSpeech");
+    const exampleSentence = document.getElementById("exampleSentence");
+
+    // TODO: Update with backend code.
+    const definition = getDefinition(wordElement.innerText);
+
+    wordDefinition.textContent = definition.word;
+    partOfSpeech.textContent = definition.partOfSpeech;
+    exampleSentence.textContent = definition.exampleSentence;
+
+    // Positioning the popup above the word
+    // const wordRect = wordElement.getBoundingClientRect();
+    // const top = wordRect.top - definitionPopup.offsetHeight - 10;
+    // const left =
+    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
+    // definitionPopup.style.top = `${top}px`;
+    // definitionPopup.style.left = `${left}px`;
+
+    // Displaying the popup
+    definitionPopup.style.display = "block";
   });
 
-  practiceDiv.addEventListener("pointerout", () => {
-    overlayDiv.style.display = "none";
+  wordElement.addEventListener("pointerout", function (event) {
+    document.querySelector("video").play();
+    const definitionPopup = document.getElementById("definitionPopup");
+    // const wordRect = word.getBoundingClientRect();
+    // const left =
+    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
+    // definitionPopup.style.left = `${left}px`;
+    definitionPopup.style.display = "none";
   });
+}
+
+// Simulating the definition retrieval for a word
+function getDefinition(word) {
+  return {
+    word: word,
+    partOfSpeech: "Noun",
+    exampleSentence: `This is an example sentence with the word "${word}".`,
+  };
 }

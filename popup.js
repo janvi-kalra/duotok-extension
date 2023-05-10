@@ -90,6 +90,9 @@ async function getAvailableLanguages() {
 
 function updateMoreShowsSubtitle(practiceLanguage) {
   var subtitle = document.querySelector(".subtitle");
-  var linkToMore = other_netflix_shows[practiceLanguage.replace(/\s/g, "")];
+  var linkToMore =
+    other_netflix_shows[
+      practiceLanguage.replace(/\s/g, "").replace(/\(CC\)$/, "")
+    ];
   subtitle.innerHTML = `Want to watching something else? <a target='blank' href=${linkToMore}>Here</a> are more shows that support learning ${practiceLanguage}`;
 }

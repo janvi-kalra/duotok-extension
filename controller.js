@@ -179,9 +179,14 @@ function getAvailableLanguages() {
   var subtitleEl = document.querySelector(
     'div[data-uia="selector-audio-subtitle"]'
   ).children[1];
-  const availableLanguages = subtitleEl.innerText
-    .split("\n")
-    .filter((l) => l !== "Subtitles" && !l.includes("(CC)"));
+  const availableSubtitles = subtitleEl.innerText.split("\n");
+  const availableLanguages = availableSubtitles.filter((language) => {
+    if (language === "Subtitles") return false;
+    const hasCounterpart = availableSubtitles.some(
+      (otherLanguage) => otherLanguage === language + " (CC)"
+    );
+    return !hasCounterpart || language.endsWith("(CC)");
+  });
   hideSubtitleSelection();
   return availableLanguages;
 }
@@ -277,7 +282,8 @@ function parseXMLSubtitles(xmlText) {
   return subtitles;
 }
 
-function updateSubtitle(subtitleEl, currentTime, subtitles) {
+function updateNativeSubtitle(currentTime, subtitles) {
+  const subtitleEl = document.getElementById("nativeSub");
   if (!subtitleEl || !subtitles) {
     return;
   }
@@ -287,9 +293,56 @@ function updateSubtitle(subtitleEl, currentTime, subtitles) {
   });
 
   if (currentSubtitle) {
-    subtitleEl.querySelector(".textBasedSub").innerText = currentSubtitle.text;
+    // Has not changed
+    if (currentSubtitle.text === CURR_NATIVE_SUB) {
+      return;
+    } else {
+      CURR_NATIVE_SUB = currentSubtitle.text;
+    }
+
+    subtitleEl.querySelector(".nativeSubText").innerText = currentSubtitle.text;
   } else {
-    subtitleEl.querySelector(".textBasedSub").innerText = "";
+    subtitleEl.querySelector(".nativeSubText").innerText = "";
+  }
+}
+
+let CURR_PRACTICE_SUB = "";
+let CURR_NATIVE_SUB = "";
+
+function updatePracticeSubtitle(currentTime, subtitles) {
+  const subtitleEl = document.getElementById("practiceSub");
+  if (!subtitleEl || !subtitles) {
+    return;
+  }
+  // Find the subtitle that matches the current time
+  const currentSubtitle = subtitles.find((subtitle) => {
+    return currentTime >= subtitle.startTime && currentTime < subtitle.endTime;
+  });
+
+  if (currentSubtitle) {
+    // Has not changed
+    if (currentSubtitle.text === CURR_PRACTICE_SUB) {
+      return;
+    } else {
+      CURR_PRACTICE_SUB = currentSubtitle.text;
+    }
+
+    const words = currentSubtitle.text.split(" ");
+    const sentenceContainer = document.querySelector(".sentenceContainer");
+
+    for (const word of words) {
+      const wordSpan = document.createElement("span");
+      wordSpan.className = "word";
+      wordSpan.textContent = word;
+      addWordListeners(wordSpan);
+      sentenceContainer.appendChild(wordSpan);
+    }
+  } else {
+    const sentenceContainer = document.querySelector(".sentenceContainer");
+    const words = sentenceContainer.querySelectorAll(".word");
+    for (const word of words) {
+      sentenceContainer.removeChild(word);
+    }
   }
 }
 
@@ -307,8 +360,8 @@ setInterval(() => {
     addDuotokLayer();
   }
 
-  updateSubtitle(practiceSub, video.currentTime, subtitlesPractice);
-  updateSubtitle(nativeSub, video.currentTime, subtitlesNative);
+  updatePracticeSubtitle(video.currentTime, subtitlesPractice);
+  updateNativeSubtitle(video.currentTime, subtitlesNative);
 }, 100);
 
 function showOriginalNetflixSubtitles() {
