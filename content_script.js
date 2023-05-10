@@ -12,6 +12,7 @@ s.onload = function () {
 function addDuotokLayer() {
   hideOriginalNetflixSubtitles();
   const duotokEl = document.createElement("div");
+  duotokEl.className = "duotokRoot";
   duotokEl.style.height = "100%";
   duotokEl.style.width = "100%";
   duotokEl.style.display = "flex";
@@ -20,7 +21,7 @@ function addDuotokLayer() {
   duotokEl.style.alignItems = "flex-end";
 
   const subtitlesHTML = `
-    <div style="position: absolute; text-align: center; margin-bottom: 200px"> 
+    <div style="position: absolute; text-align: center; margin-bottom: 200px; z-index: 1;"> 
       <div id="practiceSub" style="display: flex; flex-direction: column; align-items: center; pointer-events: auto;">
         <div class="textBasedSub" style="font-size: 40px; font-weight: 600; 
         font-family: Inter, -apple-system, 'system-ui', sans-serif; color: rgb(255, 255, 255);
@@ -44,21 +45,24 @@ function addDuotokLayer() {
 
   duotokEl.innerHTML = subtitlesHTML;
 
-  const timedTextEl = document.querySelector(".player-timedtext");
-  if (timedTextEl) {
-    timedTextEl.insertAdjacentElement("afterend", duotokEl);
+  const watchVideoEl = document.querySelector(".watch-video");
+  if (watchVideoEl) {
+    watchVideoEl.insertAdjacentElement("afterbegin", duotokEl);
   }
 
-  // const textDiv = document.querySelector(".textBasedSub");
-  // const overlayDiv = document.getElementById("definitionOverlay");
-  // const definition = 'The definition of the word "text".';
+  // Then in background script make the API calls.
+  // Add mutation observer.
+  const practiceDiv = document.getElementById("practiceSub");
+  const textDiv = document.querySelector(".textBasedSub");
+  const overlayDiv = document.getElementById("definitionOverlay");
+  const definition = 'The definition of the word "text".';
 
-  // textDiv.addEventListener("pointerover", () => {
-  //   overlayDiv.style.display = "block";
-  //   overlayDiv.innerText = definition;
-  // });
+  practiceDiv.addEventListener("pointerover", () => {
+    overlayDiv.style.display = "block";
+    overlayDiv.innerText = definition;
+  });
 
-  // textDiv.addEventListener("pointerout", () => {
-  //   overlayDiv.style.display = "none";
-  // });
+  practiceDiv.addEventListener("pointerout", () => {
+    overlayDiv.style.display = "none";
+  });
 }
