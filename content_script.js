@@ -57,18 +57,52 @@ function addDuotokLayer() {
 
 function addWordListeners(wordElement) {
   wordElement.addEventListener("pointerover", function () {
+    wordElement.style.textDecoration = "underline dotted 3px";
+    // Positioning the popup above the word
+    // const wordRect = wordElement.getBoundingClientRect();
+    // const top = wordRect.top - definitionPopup.offsetHeight - 10;
+    // const left =
+    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
+    // definitionPopup.style.top = `${top}px`;
+    // definitionPopup.style.left = `${left}px`;
+  });
+
+  wordElement.addEventListener("pointerout", function (event) {
+    wordElement.style.textDecoration = "none";
+
+    // document.querySelector("video").play();
+    // const definitionPopup = document.getElementById("definitionPopup");
+    // definitionPopup.style.display = "none";
+
+    // const wordRect = word.getBoundingClientRect();
+    // const left =
+    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
+    // definitionPopup.style.left = `${left}px`;
+  });
+
+  wordElement.addEventListener("pointerdown", async function () {
     document.querySelector("video").pause();
-    const definitionPopup = document.getElementById("definitionPopup");
-    const wordDefinition = document.getElementById("wordDefinition");
-    const partOfSpeech = document.getElementById("partOfSpeech");
-    const exampleSentence = document.getElementById("exampleSentence");
+    const definition = await getDefinition(wordElement.innerText, "Spanish");
 
-    // TODO: Update with backend code.
-    const definition = getDefinition(wordElement.innerText);
+    if (
+      definition &&
+      definition.word &&
+      definition.partOfSpeech &&
+      definition.exampleSentence
+    ) {
+      const definitionPopup = document.getElementById("definitionPopup");
+      const wordDefinition = document.getElementById("wordDefinition");
+      const partOfSpeech = document.getElementById("partOfSpeech");
+      const exampleSentence = document.getElementById("exampleSentence");
 
-    wordDefinition.textContent = definition.word;
-    partOfSpeech.textContent = definition.partOfSpeech;
-    exampleSentence.textContent = definition.exampleSentence;
+      // Populate definition modal
+      wordDefinition.textContent = definition.word;
+      partOfSpeech.textContent = definition.partOfSpeech;
+      exampleSentence.textContent = definition.exampleSentence;
+
+      // Displaying the popup
+      definitionPopup.style.display = "block";
+    }
 
     // Positioning the popup above the word
     // const wordRect = wordElement.getBoundingClientRect();
@@ -77,27 +111,45 @@ function addWordListeners(wordElement) {
     //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
     // definitionPopup.style.top = `${top}px`;
     // definitionPopup.style.left = `${left}px`;
-
-    // Displaying the popup
-    definitionPopup.style.display = "block";
-  });
-
-  wordElement.addEventListener("pointerout", function (event) {
-    document.querySelector("video").play();
-    const definitionPopup = document.getElementById("definitionPopup");
-    // const wordRect = word.getBoundingClientRect();
-    // const left =
-    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
-    // definitionPopup.style.left = `${left}px`;
-    definitionPopup.style.display = "none";
   });
 }
 
 // Simulating the definition retrieval for a word
-function getDefinition(word) {
-  return {
-    word: word,
-    partOfSpeech: "Noun",
-    exampleSentence: `This is an example sentence with the word "${word}".`,
-  };
+async function getDefinition(word, language, sentence) {
+  if (!word || !language || !sentence) {
+    return;
+  }
+  try {
+    const url = "https://api.openai.com/v1/completions";
+
+    const completionResponse = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer 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`,
+      },
+      body: JSON.stringify({
+        model: "text-davinci-003",
+        prompt: `Given the ${language} sentence "${sentence}". Return the list [English definition, Example ${language} sentence, part of speech] for the word "${word}"`,
+        temperature: 0.2,
+        max_tokens: 100,
+        top_p: 1.0,
+        frequency_penalty: 0.0,
+        presence_penalty: 0.0,
+      }),
+    });
+
+    // Select the top choice.
+    const completion = await completionResponse.json();
+    const bestChoice = completion.choices.pop();
+    const list = JSON.parse(bestChoice.text);
+
+    return {
+      word: word,
+      partOfSpeech: list[2],
+      exampleSentence: list[1],
+    };
+  } catch (error) {
+    console.log(error);
+  }
 }
