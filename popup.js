@@ -73,19 +73,19 @@ async function setNativeLanguage() {
 }
 
 async function getAvailableLanguages() {
-  const availableLanguages = (
-    await chrome.storage.sync.get(["availableLanguages"])
-  ).availableLanguages;
-  const select = document.querySelectorAll("select");
-  // For both languages-native & languages-practice
-  select?.forEach((list) => {
-    availableLanguages?.forEach((l) => {
-      const option = document.createElement("option");
-      option.value = l;
-      option.textContent = l;
-      list.appendChild(option);
-    });
-  });
+  // const availableLanguages = (
+  //   await chrome.storage.sync.get(["availableLanguages"])
+  // ).availableLanguages;
+  // const select = document.querySelectorAll("select");
+  // // For both languages-native & languages-practice
+  // select?.forEach((list) => {
+  //   availableLanguages?.forEach((l) => {
+  //     const option = document.createElement("option");
+  //     option.value = l;
+  //     option.textContent = l;
+  //     list.appendChild(option);
+  //   });
+  // });
 }
 
 function updateMoreShowsSubtitle(practiceLanguage) {
