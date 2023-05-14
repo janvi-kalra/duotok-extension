@@ -19,12 +19,12 @@ function listenForUpdatesInPopupSettings() {
       updateMoreShowsSubtitle(event.target.value);
     });
 
-  document
-    .getElementById("languages-native")
-    .addEventListener("change", async (event) => {
-      console.log(`Changed NATIVE language to ${event.target.value}`);
-      await chrome.storage.sync.set({ langNative: event.target.value });
-    });
+  // document
+  //   .getElementById("languages-native")
+  //   .addEventListener("change", async (event) => {
+  //     console.log(`Changed NATIVE language to ${event.target.value}`);
+  //     await chrome.storage.sync.set({ langNative: event.target.value });
+  //   });
 
   const toggle = document.querySelector(".toggle-input");
   toggle.addEventListener("change", async () => {
@@ -61,14 +61,15 @@ async function setPracticeLanguage() {
 async function setNativeLanguage() {
   var init_native_lang = "English"; // Default native language
   // Grab native language from sync store and update selected item in popup list
-  const langNative = await chrome.storage.sync.get(["langNative"]);
-  if (langNative) {
-    var langNativeList = document.getElementById("languages-native");
-    langNativeList.value = langNative.langNative;
-    init_native_lang = langNative.langNative;
-  } else {
-    await chrome.storage.sync.set({ langPractice: init_native_lang });
-  }
+  // const langNative = await chrome.storage.sync.get(["langNative"]);
+  // if (langNative) {
+  //   var langNativeList = document.getElementById("languages-native");
+  //   langNativeList.value = langNative.langNative;
+  //   init_native_lang = langNative.langNative;
+  // } else {
+  //   await chrome.storage.sync.set({ langPractice: init_native_lang });
+  // }
+  await chrome.storage.sync.set({ langPractice: init_native_lang });
   return init_native_lang;
 }
 

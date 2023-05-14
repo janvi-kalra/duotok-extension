@@ -237,10 +237,10 @@ function initialSetup() {
     });
 
     chrome.runtime.onMessage.addListener((settings) => {
-      if (!settings.duotokEnabled) {
-        showOriginalNetflixSubtitles();
-        return;
-      }
+      // if (!settings.duotokEnabled) {
+      //   showOriginalNetflixSubtitles();
+      //   return;
+      // }
       // Hide original Netflix subtitles
       addDuotokLayer();
       if (settings.langPractice) {

@@ -27,9 +27,12 @@ function addDuotokLayer() {
         </div>
 
         <div id="definitionPopup">
-          <h3 id="wordDefinition"></h3>
-          <p id="partOfSpeech"></p>
-          <p id="exampleSentence"></p>
+          <div id="loader" class="loader"></div>
+          <div id="dataContainer" class="hidden">
+            <h3 id="popupWord"></h3>
+            <p id="popupPOS"></p>
+            <p id="popupEx"></p>
+          </div>
         </div>
       </div>
 
@@ -82,26 +85,41 @@ function addWordListeners(wordElement) {
 
   wordElement.addEventListener("pointerdown", async function () {
     document.querySelector("video").pause();
-    const definition = await getDefinition(wordElement.innerText, "Spanish");
+
+    const definitionPopup = document.getElementById("definitionPopup");
+    showLoader();
+    definitionPopup.style.display = "block";
+
+    const sentence = Array.from(
+      wordElement.parentElement.querySelectorAll("span")
+    )
+      .map((word) => word.textContent)
+      .join(" ");
+    const definition = await getDefinition(
+      wordElement.innerText,
+      "Spanish",
+      sentence
+    );
 
     if (
       definition &&
       definition.word &&
+      definition.definition &&
       definition.partOfSpeech &&
       definition.exampleSentence
     ) {
-      const definitionPopup = document.getElementById("definitionPopup");
-      const wordDefinition = document.getElementById("wordDefinition");
-      const partOfSpeech = document.getElementById("partOfSpeech");
-      const exampleSentence = document.getElementById("exampleSentence");
+      const popupWord = document.getElementById("popupWord");
+      const popupDef = document.getElementById("popupDef");
+      const popupPOS = document.getElementById("popupPOS");
+      const popupEx = document.getElementById("popupEx");
 
       // Populate definition modal
-      wordDefinition.textContent = definition.word;
-      partOfSpeech.textContent = definition.partOfSpeech;
-      exampleSentence.textContent = definition.exampleSentence;
+      popupWord.textContent = `${definition.word} ⇢ ${definition.definition}`;
+      popupPOS.textContent = definition.partOfSpeech;
+      popupEx.textContent = definition.exampleSentence;
 
-      // Displaying the popup
-      definitionPopup.style.display = "block";
+      hideLoader();
+      showData();
     }
 
     // Positioning the popup above the word
@@ -116,6 +134,13 @@ function addWordListeners(wordElement) {
 
 // Simulating the definition retrieval for a word
 async function getDefinition(word, language, sentence) {
+  return {
+    word: "word",
+    definition: "definition",
+    partOfSpeech: "Noun",
+    exampleSentence: "This is a sentence",
+  };
+
   if (!word || !language || !sentence) {
     return;
   }
@@ -130,7 +155,7 @@ async function getDefinition(word, language, sentence) {
       },
       body: JSON.stringify({
         model: "text-davinci-003",
-        prompt: `Given the ${language} sentence "${sentence}". Return the list [English definition, Example ${language} sentence, part of speech] for the word "${word}"`,
+        prompt: `Given the ${language} sentence "${sentence}". Return the list of strings: ["English definition", "Example ${language} sentence", "part of speech"] for the word "${word}"`,
         temperature: 0.2,
         max_tokens: 100,
         top_p: 1.0,
@@ -146,10 +171,29 @@ async function getDefinition(word, language, sentence) {
 
     return {
       word: word,
+      definition: list[0],
       partOfSpeech: list[2],
       exampleSentence: list[1],
     };
   } catch (error) {
     console.log(error);
   }
+}
+
+function showLoader() {
+  const loader = document.getElementById("loader");
+  const dataContainer = document.getElementById("dataContainer");
+
+  loader.classList.remove("hidden");
+  dataContainer.classList.add("hidden");
+}
+
+function hideLoader() {
+  const loader = document.getElementById("loader");
+  loader.classList.add("hidden");
+}
+
+function showData() {
+  const dataContainer = document.getElementById("dataContainer");
+  dataContainer.classList.remove("hidden");
 }
