@@ -1,5 +1,7 @@
   /* TURN ON OFF = display hidden & not hidden... that's it */
-  .player-timedtext-text-container {
+  
+  /*   .player-timedtext-text-container  */
+  .player-timedtext {
     display: none !important;
   }
 

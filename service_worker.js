@@ -1,11 +1,10 @@
 chrome.runtime.onMessage.addListener(async (message, sender) => {
   if (message.type === "getInitialSetup") {
     await chrome.storage.sync.get(
-      ["langPractice", "langNative", "duotokEnabled"],
+      ["langPractice", "duotokEnabled"],
       (result) => {
         const settings = {
           langPractice: result.langPractice,
-          langNative: result.langNative,
           duotokEnabled: result.duotokEnabled,
         };
         chrome.tabs.sendMessage(sender.tab.id, settings);
@@ -13,10 +12,10 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
     );
     return true;
   }
-  if (message.type === "setAvailableLanguages") {
-    await chrome.storage.sync.set({ availableLanguages: message.data });
-    return true;
-  }
+  // if (message.type === "setAvailableLanguages") {
+  //   await chrome.storage.sync.set({ availableLanguages: message.data });
+  //   return true;
+  // }
   if (message.type === "RELOAD") {
     chrome.tabs.reload();
   }

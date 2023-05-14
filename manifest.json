@@ -15,8 +15,10 @@
         "angular.min.js",
         "ng-file-model.min.js",
         "utils.js",
-        "controller.js",
-        "content_script.js"
+        "content_script.js",
+        "content_scripts/on_off.js",
+        "content_scripts/duotok_root.js",
+        "content_scripts/subtitles.js"
       ],
       "matches": ["https://www.netflix.com/*"],
       "runAt": "document_start"

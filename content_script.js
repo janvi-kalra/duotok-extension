@@ -5,60 +5,6 @@ s.onload = function () {
 };
 (document.head || document.documentElement).appendChild(s);
 
-// BUG: Doesn't get the languages if you install the extension while watching a Netflix show. Unable to grab all the potential languages.
-//  Also, stop paying for Typeform!
-// TODO: Add different files for the content script / code for each component. Example -- files for the flow of the toggle.
-
-function addDuotokLayer() {
-  hideOriginalNetflixSubtitles();
-  const duotokEl = document.createElement("div");
-  duotokEl.className = "duotokRoot";
-  duotokEl.style.height = "100%";
-  duotokEl.style.width = "100%";
-  duotokEl.style.display = "flex";
-  duotokEl.style.position = "relative";
-  duotokEl.style.justifyContent = "center";
-  duotokEl.style.alignItems = "flex-end";
-
-  const subtitlesHTML = `
-    <div style="position: absolute; text-align: center; margin-bottom: 200px; z-index: 1;"> 
-      <div id="practiceSub">
-        <div class="sentenceContainer" >
-        </div>
-
-        <div id="definitionPopup">
-          <div id="loader" class="loader"></div>
-          <div id="dataContainer" class="hidden">
-            <h3 id="popupWord"></h3>
-            <p id="popupPOS"></p>
-            <p id="popupEx"></p>
-          </div>
-          <div id="definitionError" class="hidden"></div>  
-        </div>
-      </div>
-
-      <div id="nativeSub">
-        <div class="nativeSubText">
-        </div>
-      </div>
-    </div> 
-  `;
-
-  duotokEl.innerHTML = subtitlesHTML;
-
-  const watchVideoEl = document.querySelector(".watch-video");
-  if (watchVideoEl) {
-    watchVideoEl.insertAdjacentElement("afterbegin", duotokEl);
-  }
-
-  const words = document.getElementsByClassName("word");
-
-  for (let i = 0; i < words.length; i++) {
-    const word = words[i];
-    addWordListeners(word);
-  }
-}
-
 function addWordListeners(wordElement) {
   wordElement.addEventListener("pointerover", function () {
     wordElement.style.textDecoration = "underline dotted 3px";

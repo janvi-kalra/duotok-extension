@@ -14,22 +14,8 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   };
 
   $scope.newSubtitleRequest = function (data) {
-    var description = LANG_TYPE === "lang1" ? "lang1" : "lang2";
-    console.log(
-      `${LANG_TYPE} received new subtitle request for ${description}`
-    );
-
     const parsedSubtitles = parseXMLSubtitles(data);
-    if (LANG_TYPE === "lang1") {
-      subtitlesPractice = parsedSubtitles;
-    } else {
-      subtitlesNative = parsedSubtitles;
-    }
-
-    // var allText = "";
-    // parsedSubtitles.map((line) => (allText = `${allText} + ${line.text}`));
-
-    console.log(`${LANG_TYPE} completed adding new subtitle`);
+    currentSubtitle = parsedSubtitles;
   };
 
   $scope.saveSubtitleToStorage = function (sub) {
@@ -42,7 +28,6 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   document.addEventListener("RESET", function () {
     $scope.languages = [];
     subtitleMap = {};
-    LANG_TYPE = "lang1"; // Connecting Network interception with lang changed in popup.
     LANGUAGE = ""; // Connecting Network interception with selected lang in Netflix UI.
     INITIAL_SUBS = "";
   });
@@ -51,11 +36,11 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     var { data } = e.detail;
     if (LANGUAGE === "") {
       INITIAL_SUBS = data;
-      console.log(`${LANG_TYPE} first time Netflix loading`);
+      console.log(`First time Netflix loading`);
     }
     if (LANGUAGE) {
       subtitleMap[LANGUAGE] = data;
-      console.log(`${LANG_TYPE} received and stored subtitles for ${LANGUAGE}`);
+      console.log(`Received and stored subtitles for ${LANGUAGE}`);
     }
     try {
       $scope.newSubtitleRequest(data);
@@ -66,21 +51,15 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
 
   chrome.storage.onChanged.addListener((changes) => {
     for (let [item, { oldValue, newValue }] of Object.entries(changes)) {
-      // NOTE: take away the use of lang1/2, just have a variable called - "currentSubs" that I update here based on what changed.
-      if (item === "langPractice") {
-        LANG_TYPE = "lang1";
-      }
-      if (item === "langNative") {
-        LANG_TYPE = "lang2";
-      }
       if (item === "duotokEnabled") {
         chrome.runtime.sendMessage({ type: "RELOAD" });
       }
-      console.log(`${LANG_TYPE} changed from ${oldValue} to ${newValue}`);
-      setLanguage(newValue);
-      const alreadyLoadedSubs = subtitleMap[LANGUAGE];
-      if (alreadyLoadedSubs) {
-        $scope.newSubtitleRequest(alreadyLoadedSubs);
+      if (item === "") {
+        setLanguage(newValue, "practice");
+        const alreadyLoadedSubs = subtitleMap[LANGUAGE];
+        if (alreadyLoadedSubs) {
+          $scope.newSubtitleRequest(alreadyLoadedSubs);
+        }
       }
     }
   });
@@ -91,7 +70,6 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
 });
 
 //if page changes then reset controls eg: another episode of a series
-var LANG_TYPE = "lang1";
 var LANGUAGE = "";
 var INITIAL_SUBS = "";
 var oldLocation = location.href;
@@ -102,6 +80,9 @@ var trackId =
     : "";
 var subtitlesPractice = [];
 var subtitlesNative = [];
+// Pointer to subtitlesPractice or subtitlesNative depending on what should be updated. Initially, it's subtitlesNative and then from there on out it's
+// subtitlesPractice because that is what actually changes.
+var currentSubtitle;
 
 setInterval(function () {
   if (location.href != oldLocation) {
@@ -174,44 +155,33 @@ function changeNetflixAudioSubtitle(element, lang) {
   console.log(`Cannot find ${lang} in DOM`);
 }
 
-function getAvailableLanguages() {
-  showSubtitleSelection();
-  var subtitleEl = document.querySelector(
-    'div[data-uia="selector-audio-subtitle"]'
-  ).children[1];
-  const availableSubtitles = subtitleEl.innerText.split("\n");
-  const availableLanguages = availableSubtitles.filter((language) => {
-    if (language === "Subtitles") return false;
-    const hasCounterpart = availableSubtitles.some(
-      (otherLanguage) => otherLanguage === language + " (CC)"
-    );
-    return !hasCounterpart || language.endsWith("(CC)");
-  });
-  hideSubtitleSelection();
-  return availableLanguages;
-}
+// function getAvailableLanguages() {
+//   showSubtitleSelection();
+//   var subtitleEl = document.querySelector(
+//     'div[data-uia="selector-audio-subtitle"]'
+//   ).children[1];
+//   const availableSubtitles = subtitleEl.innerText.split("\n");
+//   const availableLanguages = availableSubtitles.filter((language) => {
+//     if (language === "Subtitles") return false;
+//     const hasCounterpart = availableSubtitles.some(
+//       (otherLanguage) => otherLanguage === language + " (CC)"
+//     );
+//     return !hasCounterpart || language.endsWith("(CC)");
+//   });
+//   hideSubtitleSelection();
+//   return availableLanguages;
+// }
 
 function setLanguage(lang) {
   var errors;
-
-  // First time setting the language. Store the original Netflix language.
-  if (LANGUAGE === "") {
-    LANGUAGE = getSelectedSubtitleLanguage();
-    subtitleMap[LANGUAGE] = INITIAL_SUBS;
-    INITIAL_SUBS = "";
-    console.log(
-      `${LANG_TYPE} Netflix initial setting was ${LANGUAGE}, stored in map`
-    );
-  }
+  currentSubtitle = subtitlesPractice;
 
   try {
     showSubtitleSelection();
     const [audioEl, subtitleEl] = document.querySelector(
       'div[data-uia="selector-audio-subtitle"]'
     ).children;
-    if (LANG_TYPE == "lang1") {
-      changeNetflixAudioSubtitle(audioEl, lang);
-    }
+    changeNetflixAudioSubtitle(audioEl, lang);
     changeNetflixAudioSubtitle(subtitleEl, lang);
     hideSubtitleSelection();
   } catch (err) {
@@ -219,7 +189,36 @@ function setLanguage(lang) {
   }
   if (!errors) {
     LANGUAGE = lang;
-    console.log(`${LANG_TYPE} Netflix Subtitles changed to ${LANGUAGE}`);
+    console.log(`Netflix Subtitles changed to ${LANGUAGE}`);
+  }
+}
+
+function storeInitSubs() {
+  if (LANGUAGE === "") {
+    LANGUAGE = getSelectedSubtitleLanguage();
+    subtitleMap[LANGUAGE] = INITIAL_SUBS;
+    INITIAL_SUBS = "";
+    console.log(`Netflix initial setting was ${LANGUAGE}, stored in map`);
+  }
+}
+
+function setEnglishTranslations() {
+  var errors;
+  currentSubtitle = subtitlesNative;
+
+  try {
+    showSubtitleSelection();
+    const [audioEl, subtitleEl] = document.querySelector(
+      'div[data-uia="selector-audio-subtitle"]'
+    ).children;
+    changeNetflixAudioSubtitle(subtitleEl, "English");
+    hideSubtitleSelection();
+  } catch (err) {
+    errors = err;
+  }
+  if (!errors) {
+    LANGUAGE = "English";
+    console.log(`Netflix Subtitles changed to ${LANGUAGE}`);
   }
 }
 
@@ -230,27 +229,16 @@ function initialSetup() {
 
   if (!loadingVideo && videoScreen && isOnVideoScreen) {
     chrome.runtime.sendMessage({ type: "getInitialSetup" });
-    const availableLanguages = getAvailableLanguages();
-    chrome.runtime.sendMessage({
-      type: "setAvailableLanguages",
-      data: availableLanguages,
-    });
 
     chrome.runtime.onMessage.addListener((settings) => {
-      // if (!settings.duotokEnabled) {
-      //   showOriginalNetflixSubtitles();
-      //   return;
-      // }
-      // Hide original Netflix subtitles
-      addDuotokLayer();
-      if (settings.langPractice) {
-        LANG_TYPE = "lang1";
-        setLanguage(settings.langPractice);
+      if (!settings.duotokEnabled) {
+        turnDuotokOff();
+        return;
       }
-      if (settings.langNative) {
-        LANG_TYPE = "lang2";
-        setLanguage(settings.langNative);
-      }
+      turnDuotokOn();
+      storeInitSubs();
+      setEnglishTranslations();
+      setLanguage(settings.langPractice);
     });
   } else {
     // Still loading.
@@ -346,7 +334,10 @@ function updatePracticeSubtitle(currentTime, subtitles) {
   }
 }
 
+// *********** entrypoint ***********
 initialSetup();
+
+// Update the relevant subtitle text
 setInterval(() => {
   const video = document.querySelector("video");
   if (!video) {
@@ -355,25 +346,6 @@ setInterval(() => {
   let practiceSub = document.getElementById("practiceSub");
   let nativeSub = document.getElementById("nativeSub");
 
-  // TODO: Remove this block. Instead, on document load, add the duotok layer with the appropriate settings (from storage)
-  if (!practiceSub || !nativeSub) {
-    addDuotokLayer();
-  }
-
   updatePracticeSubtitle(video.currentTime, subtitlesPractice);
   updateNativeSubtitle(video.currentTime, subtitlesNative);
 }, 100);
-
-function showOriginalNetflixSubtitles() {
-  // const textContainer = document.querySelector(".player-timedtext-text-container");
-  // if (textContainer) {
-  //   textContainer.style?.display = "none !important";
-  // }
-}
-
-function hideOriginalNetflixSubtitles() {
-  // const textContainer = document.querySelector(".player-timedtext-text-container");
-  // if (textContainer) {
-  //   textContainer.style?.display = "block !important";
-  // }
-}

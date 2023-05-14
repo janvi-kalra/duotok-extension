@@ -69,7 +69,7 @@ async function setNativeLanguage() {
   // } else {
   //   await chrome.storage.sync.set({ langPractice: init_native_lang });
   // }
-  await chrome.storage.sync.set({ langPractice: init_native_lang });
+  await chrome.storage.sync.set({ langNative: init_native_lang });
   return init_native_lang;
 }
 
