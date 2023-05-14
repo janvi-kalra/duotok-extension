@@ -1,14 +1,16 @@
 import { other_netflix_shows } from "./other_netflix_shows.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await getAvailableLanguages();
+  // await getAvailableLanguages();
   // On DOM load, set the language in the popup to the language in storage
   await setPracticeLanguage();
-  await setNativeLanguage();
+  await setNativeLanguage(); // take this out?
   await setDuotokEnabled();
+  await setAvailability();
 });
 
 listenForUpdatesInPopupSettings();
+chrome.storage.onChanged.addListener(handleStorageChange);
 
 function listenForUpdatesInPopupSettings() {
   document
@@ -18,19 +20,24 @@ function listenForUpdatesInPopupSettings() {
       await chrome.storage.sync.set({ langPractice: event.target.value });
       updateMoreShowsSubtitle(event.target.value);
     });
-
-  // document
-  //   .getElementById("languages-native")
-  //   .addEventListener("change", async (event) => {
-  //     console.log(`Changed NATIVE language to ${event.target.value}`);
-  //     await chrome.storage.sync.set({ langNative: event.target.value });
-  //   });
-
-  const toggle = document.querySelector(".toggle-input");
-  toggle.addEventListener("change", async () => {
-    await chrome.storage.sync.set({ duotokEnabled: toggle.checked });
-  });
 }
+
+// Function to handle changes in storage
+function handleStorageChange(changes) {
+  for (let [item, { oldValue, newValue }] of Object.entries(changes)) {
+    if (item === "audioAvailability") {
+      updateAvailabilityStatus("dubbingStatus", newValue);
+    }
+    if (item === "subtitleAvailability") {
+      updateAvailabilityStatus("subtitleStatus", newValue);
+    }
+  }
+}
+
+const toggle = document.querySelector(".toggle-input");
+toggle.addEventListener("change", async () => {
+  await chrome.storage.sync.set({ duotokEnabled: toggle.checked });
+});
 
 async function setDuotokEnabled() {
   var init_value = true; // On installation, duotok is on.
@@ -58,6 +65,32 @@ async function setPracticeLanguage() {
   return init_practice_lang;
 }
 
+async function setAvailability() {
+  // Grab practice language from sync store and update selected item in popup list
+  const audioAvailability = await chrome.storage.sync.get([
+    "audioAvailability",
+  ]);
+  if (audioAvailability) {
+    const element = document.getElementById("dubbingStatus");
+    if (audioAvailability.audioAvailability) {
+      element.textContent = `✅ Dubbing Available`;
+    } else {
+      element.textContent = `❌ Dubbing Unavailable`;
+    }
+  }
+  const subtitleAvailability = await chrome.storage.sync.get([
+    "subtitleAvailability",
+  ]);
+  if (subtitleAvailability) {
+    const element = document.getElementById("dubbingStatus");
+    if (subtitleAvailability.subtitleAvailability) {
+      element.textContent = `✅ Subtitle Available`;
+    } else {
+      element.textContent = `❌ Subtitle Unavailable`;
+    }
+  }
+}
+
 async function setNativeLanguage() {
   var init_native_lang = "English"; // Default native language
   // Grab native language from sync store and update selected item in popup list
@@ -73,20 +106,15 @@ async function setNativeLanguage() {
   return init_native_lang;
 }
 
-async function getAvailableLanguages() {
-  // const availableLanguages = (
-  //   await chrome.storage.sync.get(["availableLanguages"])
-  // ).availableLanguages;
-  // const select = document.querySelectorAll("select");
-  // // For both languages-native & languages-practice
-  // select?.forEach((list) => {
-  //   availableLanguages?.forEach((l) => {
-  //     const option = document.createElement("option");
-  //     option.value = l;
-  //     option.textContent = l;
-  //     list.appendChild(option);
-  //   });
-  // });
+// Function to update the availability status
+function updateAvailabilityStatus(elementId, available) {
+  const element = document.getElementById(elementId);
+  const type = elementId === "subtitleStatus" ? "Subtitle" : "Dubbing";
+  if (available) {
+    element.textContent = `✅ ${type} Available`;
+  } else {
+    element.textContent = `❌ ${type} Unavailable`;
+  }
 }
 
 function updateMoreShowsSubtitle(practiceLanguage) {

@@ -16,6 +16,17 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
   //   await chrome.storage.sync.set({ availableLanguages: message.data });
   //   return true;
   // }
+  if (message.type === "AUDIO_AVAILABILITY") {
+    await chrome.storage.sync.set({ audioAvailability: message.availability });
+    return true;
+  }
+
+  if (message.type === "SUBTITLE_AVAILABILITY") {
+    await chrome.storage.sync.set({
+      subtitleAvailability: message.availability,
+    });
+    return true;
+  }
   if (message.type === "RELOAD") {
     chrome.tabs.reload();
   }
