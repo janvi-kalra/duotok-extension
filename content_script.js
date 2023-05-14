@@ -33,6 +33,7 @@ function addDuotokLayer() {
             <p id="popupPOS"></p>
             <p id="popupEx"></p>
           </div>
+          <div id="definitionError" class="hidden"></div>  
         </div>
       </div>
 
@@ -112,14 +113,14 @@ function addWordListeners(wordElement) {
       const popupDef = document.getElementById("popupDef");
       const popupPOS = document.getElementById("popupPOS");
       const popupEx = document.getElementById("popupEx");
-
       // Populate definition modal
       popupWord.textContent = `${definition.word} ⇢ ${definition.definition}`;
       popupPOS.textContent = definition.partOfSpeech;
       popupEx.textContent = definition.exampleSentence;
-
       hideLoader();
       showData();
+    } else {
+      errorGettingDefinition();
     }
 
     // Positioning the popup above the word
@@ -134,12 +135,12 @@ function addWordListeners(wordElement) {
 
 // Simulating the definition retrieval for a word
 async function getDefinition(word, language, sentence) {
-  return {
-    word: "word",
-    definition: "definition",
-    partOfSpeech: "Noun",
-    exampleSentence: "This is a sentence",
-  };
+  // return {
+  //   word: "word",
+  //   definition: "definition",
+  //   partOfSpeech: "Noun",
+  //   exampleSentence: "This is a sentence",
+  // };
 
   if (!word || !language || !sentence) {
     return;
@@ -196,4 +197,12 @@ function hideLoader() {
 function showData() {
   const dataContainer = document.getElementById("dataContainer");
   dataContainer.classList.remove("hidden");
+}
+
+function errorGettingDefinition() {
+  const error = document.getElementById("definitionError");
+  error.textContent =
+    "Uh Oh... we faced an error and we not able to grab the definition";
+  hideLoader();
+  error.classList.remove("hidden");
 }

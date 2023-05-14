@@ -96,7 +96,7 @@
     line-height: 0px;
   }
   
-  #popupWord {
+  #popupWord, #definitionError {
     font-size: 24px;
   }
   
@@ -113,27 +113,23 @@
     font-style: italic;
   }
 
-  /* #popupWord, #popupDef {
-    font-size: 16px;
-    margin: 0;
-    color: white, 
+  .hidden {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
   }
-
-  #popupPOS {
-    font-size: 12px;
-    margin: 0;
-    color: white;
+  
+  .hidden:not(.visible) {
+    display: none;
   }
-
-  #popupEx {
-    font-size: 14px;
-    margin: 10px 0 0 0;
-    color: white;
-  } */
+  
+  .visible {
+    height: auto;
+  }
 
   .loader {
-    border: 8px solid #f3f3f3; /* Light grey */
-    border-top: 8px solid #3498db; /* Blue */
+    border: 2px solid #f3f3f3; /* Light grey */
+    border-top: 2px solid lightgreen; 
     border-radius: 50%;
     width: 60px;
     height: 60px;
