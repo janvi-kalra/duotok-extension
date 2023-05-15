@@ -200,11 +200,18 @@ function setLanguage(lang) {
     ).children;
 
     const audio_avail = changeNetflixAudioSubtitle(audioEl, lang);
+    if (!audio_avail) {
+      changeNetflixAudioSubtitle(audioEl, "Original");
+    }
     chrome.runtime.sendMessage({
       type: "AUDIO_AVAILABILITY",
       availability: audio_avail,
     });
+
     const subs_avail = changeNetflixAudioSubtitle(subtitleEl, lang);
+    if (!subs_avail) {
+      subtitlesPractice = [];
+    }
     chrome.runtime.sendMessage({
       type: "SUBTITLE_AVAILABILITY",
       availability: subs_avail,
