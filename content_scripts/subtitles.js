@@ -160,8 +160,7 @@ function getSelectedSubtitleLanguage() {
   return chosenSub.innerText;
 }
 
-function changeNetflixAudioSubtitle(element, iLang) {
-  let lang = edgeCases(iLang);
+function changeNetflixAudioSubtitle(element, lang) {
   const languages = element.querySelectorAll("li");
   for (let i = 0; i < languages.length; i++) {
     const text = languages[i].innerText;
@@ -377,17 +376,6 @@ function updatePracticeSubtitle(currentTime, subtitles) {
 function wipeCurrPracticeSubtitle() {
   const sentenceContainer = document.querySelector(".sentenceContainer");
   sentenceContainer.innerHTML = "";
-}
-
-function edgeCases(lang) {
-  if (lang === "FrenchCanadian") {
-    return "French Canadian";
-  } else if (lang === "SimplifiedChinese") {
-    return "Simplified Chinese";
-  } else if (lang === "TraditionalChinese") {
-    return "Traditional Chinese";
-  }
-  return lang;
 }
 
 // *********** entrypoint ***********
