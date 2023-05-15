@@ -224,19 +224,17 @@ function storeInitSubs() {
   if (LANGUAGE === "") {
     LANGUAGE = getSelectedSubtitleLanguage();
     subtitleMap[LANGUAGE] = INITIAL_SUBS;
-    if (LANG_TYPE === "lang1") {
-      subtitlesNative = parseXMLSubtitles(INITIAL_SUBS);
-    } else {
-      subtitlesPractice = parseXMLSubtitles(INITIAL_SUBS);
-    }
+    LANGUAGE.includes("English")
+      ? (subtitlesNative = parseXMLSubtitles(INITIAL_SUBS))
+      : (subtitlesPractice = parseXMLSubtitles(INITIAL_SUBS));
     INITIAL_SUBS = "";
     console.log(`Netflix initial setting was ${LANGUAGE}, stored in map`);
   }
 }
 
 function setEnglishTranslations() {
+  LANG_TYPE = "lang2";
   var errors;
-  // currentSubtitle = subtitlesNative;
 
   try {
     showSubtitleSelection();

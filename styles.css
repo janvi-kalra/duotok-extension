@@ -69,25 +69,16 @@
     background-color: rgba(18, 18, 18, 0.8);
     border-radius: 8px;
     box-sizing: border-box;
-    max-width: 300px;
+    max-width: fit-content;
     min-width: 250px;
     padding: 12px;
-    max-height: 320px;
-    overflow-y: auto;
+    height: fit-content;
+    /* max-height: 500px; */
+    /* word-wrap: break-word; */
+    /* overflow-y: auto; */
     transition: all 200ms ease-out 0s;
     opacity: 1;
     transform: translateY(0px);
-  }
-
-  #definitionPopup::before {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -8px;
-    border-width: 8px;
-    border-style: solid;
-    border-color: transparent transparent #ccc transparent;
   }
 
   #dataContainer {

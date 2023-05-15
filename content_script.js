@@ -81,12 +81,13 @@ function addWordListeners(wordElement) {
 
 // Simulating the definition retrieval for a word
 async function getDefinition(word, language, sentence) {
-  // return {
-  //   word: "word",
-  //   definition: "definition",
-  //   partOfSpeech: "Noun",
-  //   exampleSentence: "This is a sentence",
-  // };
+  return {
+    word: "this is a very long word",
+    definition: "this is a very very very very long definition",
+    partOfSpeech: "Noun",
+    exampleSentence:
+      "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
+  };
 
   if (!word || !language || !sentence) {
     return;
