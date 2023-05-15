@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // await getAvailableLanguages();
   // On DOM load, set the language in the popup to the language in storage
   await setPracticeLanguage();
-  await setNativeLanguage(); // take this out?
   await setDuotokEnabled();
   await setAvailability();
 });
@@ -66,44 +65,33 @@ async function setPracticeLanguage() {
 }
 
 async function setAvailability() {
-  // Grab practice language from sync store and update selected item in popup list
+  var audioIsAvailable = false;
   const audioAvailability = await chrome.storage.sync.get([
     "audioAvailability",
   ]);
+  var element = document.getElementById("dubbingStatus");
   if (audioAvailability) {
-    const element = document.getElementById("dubbingStatus");
-    if (audioAvailability.audioAvailability) {
-      element.textContent = `✅ Dubbing Available`;
-    } else {
-      element.textContent = `❌ Dubbing Unavailable`;
-    }
+    audioIsAvailable = audioAvailability.audioAvailability;
   }
+  if (audioIsAvailable) {
+    element.textContent = `✅ Dubbing Available`;
+  } else {
+    element.textContent = `❌ Dubbing Unavailable`;
+  }
+
+  var subtitleIsAvailable = false;
+  element = document.getElementById("subtitleStatus");
   const subtitleAvailability = await chrome.storage.sync.get([
     "subtitleAvailability",
   ]);
   if (subtitleAvailability) {
-    const element = document.getElementById("dubbingStatus");
-    if (subtitleAvailability.subtitleAvailability) {
-      element.textContent = `✅ Subtitle Available`;
-    } else {
-      element.textContent = `❌ Subtitle Unavailable`;
-    }
+    subtitleIsAvailable = subtitleAvailability.subtitleAvailability;
   }
-}
-
-async function setNativeLanguage() {
-  var init_native_lang = "English"; // Default native language
-  // Grab native language from sync store and update selected item in popup list
-  // const langNative = await chrome.storage.sync.get(["langNative"]);
-  // if (langNative) {
-  //   var langNativeList = document.getElementById("languages-native");
-  //   langNativeList.value = langNative.langNative;
-  //   init_native_lang = langNative.langNative;
-  // } else {
-  //   await chrome.storage.sync.set({ langPractice: init_native_lang });
-  // }
-  await chrome.storage.sync.set({ langNative: init_native_lang });
-  return init_native_lang;
+  if (subtitleIsAvailable) {
+    element.textContent = `✅ Subtitle Available`;
+  } else {
+    element.textContent = `❌ Subtitle Unavailable`;
+  }
 }
 
 // Function to update the availability status
