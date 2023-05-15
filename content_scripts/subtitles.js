@@ -68,7 +68,7 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     for (let [item, { oldValue, newValue }] of Object.entries(changes)) {
       if (item === "langPractice") {
         LANG_TYPE = "lang1";
-        setLanguage(newValue);
+        setPracticeLanguage(newValue);
         const alreadyLoadedSubs = subtitleMap[LANGUAGE];
         if (alreadyLoadedSubs) {
           $scope.newSubtitleRequest(alreadyLoadedSubs);
@@ -160,7 +160,8 @@ function getSelectedSubtitleLanguage() {
   return chosenSub.innerText;
 }
 
-function changeNetflixAudioSubtitle(element, lang) {
+function changeNetflixAudioSubtitle(element, iLang) {
+  let lang = edgeCases(iLang);
   const languages = element.querySelectorAll("li");
   for (let i = 0; i < languages.length; i++) {
     const text = languages[i].innerText;
@@ -189,7 +190,7 @@ function changeNetflixAudioSubtitle(element, lang) {
 //   return availableLanguages;
 // }
 
-function setLanguage(lang) {
+function setPracticeLanguage(lang) {
   var errors;
   // currentSubtitle = subtitlesPractice;
   wipeCurrPracticeSubtitle();
@@ -277,7 +278,7 @@ function initialSetup() {
       storeInitSubs();
       if (settings.langPractice) {
         LANG_TYPE = "lang1";
-        setLanguage(settings.langPractice);
+        setPracticeLanguage(settings.langPractice);
       }
       setEnglishTranslations();
     });
@@ -376,6 +377,17 @@ function updatePracticeSubtitle(currentTime, subtitles) {
 function wipeCurrPracticeSubtitle() {
   const sentenceContainer = document.querySelector(".sentenceContainer");
   sentenceContainer.innerHTML = "";
+}
+
+function edgeCases(lang) {
+  if (lang === "FrenchCanadian") {
+    return "French Canadian";
+  } else if (lang === "SimplifiedChinese") {
+    return "Simplified Chinese";
+  } else if (lang === "TraditionalChinese") {
+    return "Traditional Chinese";
+  }
+  return lang;
 }
 
 // *********** entrypoint ***********
