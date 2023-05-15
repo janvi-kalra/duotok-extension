@@ -192,6 +192,7 @@ function changeNetflixAudioSubtitle(element, lang) {
 function setLanguage(lang) {
   var errors;
   // currentSubtitle = subtitlesPractice;
+  wipeCurrPracticeSubtitle();
 
   try {
     showSubtitleSelection();
@@ -368,12 +369,13 @@ function updatePracticeSubtitle(currentTime, subtitles) {
       sentenceContainer.appendChild(wordSpan);
     }
   } else {
-    const sentenceContainer = document.querySelector(".sentenceContainer");
-    const words = sentenceContainer.querySelectorAll(".word");
-    for (const word of words) {
-      sentenceContainer.removeChild(word);
-    }
+    wipeCurrPracticeSubtitle();
   }
+}
+
+function wipeCurrPracticeSubtitle() {
+  const sentenceContainer = document.querySelector(".sentenceContainer");
+  sentenceContainer.innerHTML = "";
 }
 
 // *********** entrypoint ***********
