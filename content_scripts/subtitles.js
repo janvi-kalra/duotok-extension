@@ -296,13 +296,7 @@ function parseXMLSubtitles(xmlText) {
     (subtitleNode) => {
       const startTimeStr = subtitleNode.getAttribute("begin").replace("t", "");
       const endTimeStr = subtitleNode.getAttribute("end").replace("t", "");
-      let text = subtitleNode.textContent;
-      // TODO: fix because there is a spacing bug here for some languages. Ex: Spanish.
-      // const spans = subtitleNode.querySelectorAll("span");
-      // let text = "";
-      // for (let span of spans) {
-      //   text += `${span.textContent} `;
-      // }
+      let text = extractSentenceFromHTML(subtitleNode);
       return {
         startTime: formatTimeTrack(startTimeStr),
         endTime: formatTimeTrack(endTimeStr),
@@ -375,7 +369,20 @@ function updatePracticeSubtitle(currentTime, subtitles) {
 
 function wipeCurrPracticeSubtitle() {
   const sentenceContainer = document.querySelector(".sentenceContainer");
-  sentenceContainer.innerHTML = "";
+  if (sentenceContainer) {
+    sentenceContainer.innerHTML = "";
+  }
+}
+
+function extractSentenceFromHTML(html) {
+  let sentence = "";
+  const nodes = html.childNodes;
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    sentence += `${node.textContent.trim()} `;
+  }
+  return sentence;
 }
 
 // *********** entrypoint ***********
