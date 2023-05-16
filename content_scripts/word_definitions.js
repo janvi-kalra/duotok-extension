@@ -66,13 +66,14 @@ function addWordListeners(wordElement) {
 }
 
 async function getDefinition(word, language, sentence) {
-  // return {
-  //   word: "this is a very long word",
-  //   definition: "this is a very very very very long definition",
-  //   partOfSpeech: "Noun",
-  //   exampleSentence:
-  //     "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
-  // };
+  return {
+    word: "this is a very long word",
+    definition: "this is a very very very very long definition",
+    partOfSpeech: "Noun",
+    exampleSentence:
+      "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
+    romanization: "Pahli",
+  };
 
   if (!word || !language || !sentence) {
     return;
@@ -151,7 +152,7 @@ function positionPopupAboveWord(popupElement, wordElement) {
   // Calculate the top and left values for the popup element
   // popupElement.style.left = `${wordRect.left - popupRect.width / 2}px`;
 
-  popupElement.style.left = `${wordRect.left}px`;
+  // popupElement.style.left = `${wordRect.left}px`;
 
   // // Set the position of the popup element
   // popupElement.style.bottom = `${bottom}px`;
@@ -159,4 +160,9 @@ function positionPopupAboveWord(popupElement, wordElement) {
 
   // Show the popup element
   popupElement.style.display = "block";
+}
+
+function hideDefinitionPopup() {
+  const element = document.getElementById("definitionPopup");
+  element.style.display = "none";
 }

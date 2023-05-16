@@ -313,31 +313,38 @@ function updatePracticeSubtitle(currentTime, subtitles) {
     return currentTime >= subtitle.startTime && currentTime < subtitle.endTime;
   });
 
-  if (currentSubtitle) {
-    // Has not changed
-    if (currentSubtitle.text === CURR_PRACTICE_SUB) {
-      return;
-    } else {
-      CURR_PRACTICE_SUB = currentSubtitle.text;
-    }
-
-    let words;
-    if (PRACTICE_LANGUAGE.includes("Chinese")) {
-      words = [...currentSubtitle.text];
-    } else {
-      words = currentSubtitle.text.split(" ");
-    }
-    const sentenceContainer = document.querySelector(".sentenceContainer");
-
-    for (const word of words) {
-      const wordSpan = document.createElement("span");
-      wordSpan.className = "word";
-      wordSpan.textContent = word;
-      addWordListeners(wordSpan);
-      sentenceContainer.appendChild(wordSpan);
-    }
-  } else {
+  // No subtitles currently
+  if (!currentSubtitle?.text) {
+    hideDefinitionPopup();
     wipeCurrPracticeSubtitle();
+    return;
+  }
+
+  // Subtitle hasn't changed
+  if (currentSubtitle.text === CURR_PRACTICE_SUB) {
+    return;
+  }
+
+  // Update subtitle
+  hideDefinitionPopup();
+  CURR_PRACTICE_SUB = currentSubtitle.text;
+
+  // Break into individual words
+  let words;
+  if (PRACTICE_LANGUAGE.includes("Chinese")) {
+    words = [...currentSubtitle.text];
+  } else {
+    words = currentSubtitle.text.split(" ");
+  }
+  const sentenceContainer = document.querySelector(".sentenceContainer");
+
+  // Create spans for each words
+  for (const word of words) {
+    const wordSpan = document.createElement("span");
+    wordSpan.className = "word";
+    wordSpan.textContent = word;
+    addWordListeners(wordSpan);
+    sentenceContainer.appendChild(wordSpan);
   }
 }
 

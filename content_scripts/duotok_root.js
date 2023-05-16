@@ -11,23 +11,21 @@ function addDuotokLayer() {
   const subtitlesHTML = `
       <div style="position: absolute; text-align: center; margin-bottom: 200px; z-index: 1;"> 
         <div id="practiceSub">
-          <div class="sentenceContainer" >
-          </div>
+          <div class="sentenceContainer"></div>
+        </div> 
   
-          <div id="definitionPopup">
-            <div id="loader" class="loader"></div>
-            <div id="dataContainer" class="hidden">
-              <h3 id="popupWord"></h3>
-              <p id="popupPOS"></p>
-              <p id="popupEx"></p>
-            </div>
-            <div id="definitionError" class="hidden"></div>  
+        <div id="definitionPopup">
+          <div id="loader" class="loader"></div>
+          <div id="dataContainer" class="hidden">
+            <h3 id="popupWord"></h3>
+            <p id="popupPOS"></p>
+            <p id="popupEx"></p>
           </div>
+          <div id="definitionError" class="hidden"></div>  
         </div>
   
         <div id="nativeSub">
-          <div class="nativeSubText">
-          </div>
+          <div class="nativeSubText"></div>
         </div>
       </div> 
     `;
