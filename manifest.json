@@ -15,7 +15,7 @@
         "angular.min.js",
         "ng-file-model.min.js",
         "utils.js",
-        "content_script.js",
+        "content_scripts/word_definitions.js",
         "content_scripts/on_off.js",
         "content_scripts/duotok_root.js",
         "content_scripts/subtitles.js"

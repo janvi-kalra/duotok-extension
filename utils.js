@@ -38,3 +38,20 @@ function parseTime(timeString) {
   const milliseconds = parseInt(secondsParts[1]);
   return hours * 3600 + minutes * 60 + seconds + milliseconds / 1000;
 }
+
+function isNonwesternLanguage(lang) {
+  const nwlangs = [
+    "Arabic",
+    "Simplified Chinese",
+    "Traditional Chinese",
+    "Greek",
+    "Hebrew",
+    "Hindi",
+    "Korean",
+    "Russian",
+    "Swahili",
+    "Tamil",
+    "Ukrainian",
+  ];
+  return nwlangs.includes(lang);
+}

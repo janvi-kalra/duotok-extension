@@ -65,14 +65,17 @@
   #definitionPopup {
     display: none;
     position: absolute;
-    top: -140px;
+    /* top: -140px; */
+    bottom: 98px;
     background-color: rgba(18, 18, 18, 0.8);
     border-radius: 8px;
-    box-sizing: border-box;
+    /* box-sizing: border-box;a */
     max-width: fit-content;
     min-width: 250px;
     padding: 12px;
     height: fit-content;
+    max-width: 400px;
+    min-width: 200px;
     /* max-height: 500px; */
     /* word-wrap: break-word; */
     /* overflow-y: auto; */
@@ -86,24 +89,28 @@
     flex-direction: column;
     align-items: flex-start;
     color: white;
-    line-height: 0px;
+    padding: 12px;
   }
   
   #popupWord, #definitionError {
     font-size: 24px;
+    margin: 0px;
   }
   
   #popupDef {
     font-size: 18px;
+    margin: 0px;
   }
   
   #popupPOS {
     font-size: 14px;
+    margin: 0px;
   }
   
   #popupEx {
     font-size: 18px;
     font-style: italic;
+    margin: 0px;
   }
 
   .hidden {

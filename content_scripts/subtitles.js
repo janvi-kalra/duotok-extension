@@ -25,18 +25,6 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
     } else {
       subtitlesNative = parsedSubtitles;
     }
-
-    // var allText = "";
-    // parsedSubtitles.map((line) => (allText = `${allText} + ${line.text}`));
-
-    // console.log(`${LANG_TYPE} completed adding new subtitle`);
-  };
-
-  $scope.saveSubtitleToStorage = function (sub) {
-    localStorage.setItem(sub.name, JSON.stringify(sub));
-    // console.log(
-    //   `${LANG_TYPE} saved subtitle to storage for subname ${sub.name}`
-    // );
   };
 
   document.addEventListener("RESET", function () {
@@ -88,6 +76,7 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
 //if page changes then reset controls eg: another episode of a series
 var LANG_TYPE = "lang1";
 var LANGUAGE = "";
+var PRACTICE_LANGUAGE = "";
 var INITIAL_SUBS = "";
 var oldLocation = location.href;
 var trackId =
@@ -97,9 +86,6 @@ var trackId =
     : "";
 var subtitlesPractice = [];
 var subtitlesNative = [];
-// // Pointer to subtitlesPractice or subtitlesNative depending on what should be updated. Initially, it's subtitlesNative and then from there on out it's
-// // subtitlesPractice because that is what actually changes.
-// var currentSubtitle;
 
 setInterval(function () {
   if (location.href != oldLocation) {
@@ -172,26 +158,8 @@ function changeNetflixAudioSubtitle(element, lang) {
   return false;
 }
 
-// function getAvailableLanguages() {
-//   showSubtitleSelection();
-//   var subtitleEl = document.querySelector(
-//     'div[data-uia="selector-audio-subtitle"]'
-//   ).children[1];
-//   const availableSubtitles = subtitleEl.innerText.split("\n");
-//   const availableLanguages = availableSubtitles.filter((language) => {
-//     if (language === "Subtitles") return false;
-//     const hasCounterpart = availableSubtitles.some(
-//       (otherLanguage) => otherLanguage === language + " (CC)"
-//     );
-//     return !hasCounterpart || language.endsWith("(CC)");
-//   });
-//   hideSubtitleSelection();
-//   return availableLanguages;
-// }
-
 function setPracticeLanguage(lang) {
   var errors;
-  // currentSubtitle = subtitlesPractice;
   wipeCurrPracticeSubtitle();
 
   try {
@@ -224,6 +192,7 @@ function setPracticeLanguage(lang) {
   }
   if (!errors) {
     LANGUAGE = lang;
+    PRACTICE_LANGUAGE = lang;
     console.log(`Netflix Subtitles changed to ${LANGUAGE}`);
   }
 }
@@ -352,7 +321,12 @@ function updatePracticeSubtitle(currentTime, subtitles) {
       CURR_PRACTICE_SUB = currentSubtitle.text;
     }
 
-    const words = currentSubtitle.text.split(" ");
+    let words;
+    if (PRACTICE_LANGUAGE.includes("Chinese")) {
+      words = [...currentSubtitle.text];
+    } else {
+      words = currentSubtitle.text.split(" ");
+    }
     const sentenceContainer = document.querySelector(".sentenceContainer");
 
     for (const word of words) {
@@ -382,7 +356,7 @@ function extractSentenceFromHTML(html) {
     const node = nodes[i];
     sentence += `${node.textContent.trim()} `;
   }
-  return sentence;
+  return sentence.trim();
 }
 
 // *********** entrypoint ***********

@@ -8,13 +8,6 @@ s.onload = function () {
 function addWordListeners(wordElement) {
   wordElement.addEventListener("pointerover", function () {
     wordElement.style.textDecoration = "underline dotted 3px";
-    // Positioning the popup above the word
-    // const wordRect = wordElement.getBoundingClientRect();
-    // const top = wordRect.top - definitionPopup.offsetHeight - 10;
-    // const left =
-    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
-    // definitionPopup.style.top = `${top}px`;
-    // definitionPopup.style.left = `${left}px`;
   });
 
   wordElement.addEventListener("pointerout", function (event) {
@@ -23,11 +16,6 @@ function addWordListeners(wordElement) {
     // document.querySelector("video").play();
     // const definitionPopup = document.getElementById("definitionPopup");
     // definitionPopup.style.display = "none";
-
-    // const wordRect = word.getBoundingClientRect();
-    // const left =
-    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
-    // definitionPopup.style.left = `${left}px`;
   });
 
   wordElement.addEventListener("pointerdown", async function () {
@@ -35,16 +23,19 @@ function addWordListeners(wordElement) {
 
     const definitionPopup = document.getElementById("definitionPopup");
     showLoader();
-    definitionPopup.style.display = "block";
 
     const sentence = Array.from(
       wordElement.parentElement.querySelectorAll("span")
     )
       .map((word) => word.textContent)
       .join(" ");
+
+    const langPractice = (await chrome.storage.sync.get(["langPractice"]))
+      ?.langPractice;
+
     const definition = await getDefinition(
       wordElement.innerText,
-      "Spanish",
+      langPractice,
       sentence
     );
 
@@ -60,40 +51,38 @@ function addWordListeners(wordElement) {
       const popupPOS = document.getElementById("popupPOS");
       const popupEx = document.getElementById("popupEx");
       // Populate definition modal
-      popupWord.textContent = `${definition.word} ⇢ ${definition.definition}`;
+      popupWord.textContent = `${definition.word} ⇢ ${
+        definition.definition
+      } + ${definition.romanization ?? "none"}`;
       popupPOS.textContent = definition.partOfSpeech;
       popupEx.textContent = definition.exampleSentence;
       hideLoader();
       showData();
+      positionPopupAboveWord(definitionPopup, wordElement);
     } else {
       errorGettingDefinition();
     }
-
-    // Positioning the popup above the word
-    // const wordRect = wordElement.getBoundingClientRect();
-    // const top = wordRect.top - definitionPopup.offsetHeight - 10;
-    // const left =
-    //   wordRect.left + (wordRect.width - definitionPopup.offsetWidth) / 2;
-    // definitionPopup.style.top = `${top}px`;
-    // definitionPopup.style.left = `${left}px`;
   });
 }
 
-// Simulating the definition retrieval for a word
 async function getDefinition(word, language, sentence) {
-  return {
-    word: "this is a very long word",
-    definition: "this is a very very very very long definition",
-    partOfSpeech: "Noun",
-    exampleSentence:
-      "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
-  };
+  // return {
+  //   word: "this is a very long word",
+  //   definition: "this is a very very very very long definition",
+  //   partOfSpeech: "Noun",
+  //   exampleSentence:
+  //     "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
+  // };
 
   if (!word || !language || !sentence) {
     return;
   }
   try {
     const url = "https://api.openai.com/v1/completions";
+
+    const prompt = isNonwesternLanguage(language)
+      ? `Given the ${language} sentence "${sentence}". Return the list of strings: ["Short English definition", "New example ${language} sentence", "part of speech", "Romanization with spaces"] for the word "${word}"`
+      : `Given the ${language} sentence "${sentence}". Return the list of strings: ["Short English definition", "New example ${language} sentence", "part of speech"] for the word "${word}"`;
 
     const completionResponse = await fetch(url, {
       method: "POST",
@@ -103,7 +92,7 @@ async function getDefinition(word, language, sentence) {
       },
       body: JSON.stringify({
         model: "text-davinci-003",
-        prompt: `Given the ${language} sentence "${sentence}". Return the list of strings: ["English definition", "Example ${language} sentence", "part of speech"] for the word "${word}"`,
+        prompt,
         temperature: 0.2,
         max_tokens: 100,
         top_p: 1.0,
@@ -122,6 +111,7 @@ async function getDefinition(word, language, sentence) {
       definition: list[0],
       partOfSpeech: list[2],
       exampleSentence: list[1],
+      romanization: list?.[3],
     };
   } catch (error) {
     console.log(error);
@@ -152,4 +142,21 @@ function errorGettingDefinition() {
     "Uh Oh... we faced an error and we not able to grab the definition";
   hideLoader();
   error.classList.remove("hidden");
+}
+
+function positionPopupAboveWord(popupElement, wordElement) {
+  const popupRect = popupElement.getBoundingClientRect();
+  const wordRect = wordElement.getBoundingClientRect();
+
+  // Calculate the top and left values for the popup element
+  // popupElement.style.left = `${wordRect.left - popupRect.width / 2}px`;
+
+  popupElement.style.left = `${wordRect.left}px`;
+
+  // // Set the position of the popup element
+  // popupElement.style.bottom = `${bottom}px`;
+  // popupElement.style.left = `${left}px`;
+
+  // Show the popup element
+  popupElement.style.display = "block";
 }
