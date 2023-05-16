@@ -7,9 +7,16 @@
   <body>
     <div class="container">
       <div>
-        <img src="duotok_logo.jpeg" alt="Your image description" />
+        <div class="header"> 
+          <img src="duotok_logo.jpeg" alt="Your image description" />
+          <div class="onoff">On/Off
+            <label for="toggle">
+              <input type="checkbox" id="toggle" class="toggle-input">
+              <div class="toggle"></div>
+            </label>
+          </div>
+        </div>
 
-        <div class="title">I want to practice...</div>
         <div class="select-wrapper">
           <select id="languages-practice">
             <option value="Arabic">&#x1F1F8;&#x1F1E6; Arabic</option>
@@ -60,14 +67,8 @@
           <div id="dubbingStatus"></div> 
         </div>
 
-        <div class="on/off"> 
-          <div class="watchOther"></div>
-          <div class="onoff">On/Off
-          <label for="toggle">
-            <input type="checkbox" id="toggle" class="toggle-input"/>
-            <div class="toggle"></div>
-          </label>
-        </div>
+        <div class="watchOther"></div>
+
 
         <div id="separator"></div>
 
