@@ -19,8 +19,13 @@ async function queryOpenAi(word, language, sentence) {
     }),
   });
 
-  const parsedResponse = await completionResponse.json();
-  return parsedResponse;
+  try {
+    const parsedResponse = await completionResponse.json();
+    return parsedResponse;
+  } catch (err) {
+    console.log("the completed unparsable response", completionResponse);
+    throw err;
+  }
 }
 
 function languageSpecificPrompt(word, language, sentence) {

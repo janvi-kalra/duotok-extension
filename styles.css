@@ -90,6 +90,7 @@
     align-items: flex-start;
     color: white;
     padding: 12px;
+    user-select: text;
   }
   
   #popupWord, #definitionError {
