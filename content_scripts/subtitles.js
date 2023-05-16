@@ -14,10 +14,7 @@ app.controller("MyCtrl", function ($scope, $http, $interval, $timeout) {
   };
 
   $scope.newSubtitleRequest = function (data) {
-    var description = LANG_TYPE === "lang1" ? "lang1" : "lang2";
-    console.log(
-      `${LANG_TYPE} received new subtitle request for ${description}`
-    );
+    console.log(`${LANG_TYPE} received new subtitle request`);
 
     const parsedSubtitles = parseXMLSubtitles(data);
     if (LANG_TYPE === "lang1") {
@@ -193,7 +190,7 @@ function setPracticeLanguage(lang) {
   if (!errors) {
     LANGUAGE = lang;
     PRACTICE_LANGUAGE = lang;
-    console.log(`Netflix Subtitles changed to ${LANGUAGE}`);
+    console.log(`Practice language successfully changed to ${LANGUAGE}`);
   }
 }
 
@@ -205,7 +202,7 @@ function storeInitSubs() {
       ? (subtitlesNative = parseXMLSubtitles(INITIAL_SUBS))
       : (subtitlesPractice = parseXMLSubtitles(INITIAL_SUBS));
     INITIAL_SUBS = "";
-    console.log(`Netflix initial setting was ${LANGUAGE}, stored in map`);
+    console.log(`Netflix initial setting was ${LANGUAGE}. Stored it map`);
   }
 }
 
@@ -225,7 +222,7 @@ function setEnglishTranslations() {
   }
   if (!errors) {
     LANGUAGE = "English";
-    console.log(`Netflix Subtitles changed to ${LANGUAGE}`);
+    console.log(`Native language successfully changed to ${LANGUAGE}`);
   }
 }
 
@@ -242,10 +239,12 @@ function initialSetup() {
         turnDuotokOff();
         return;
       }
+      console.log("Starting initial setup...");
       turnDuotokOn();
       storeInitSubs();
       if (settings.langPractice) {
         LANG_TYPE = "lang1";
+        console.log(`Practice language is ${settings.langPractice}`);
         setPracticeLanguage(settings.langPractice);
       }
       setEnglishTranslations();

@@ -18,7 +18,8 @@
         "content_scripts/word_definitions.js",
         "content_scripts/on_off.js",
         "content_scripts/duotok_root.js",
-        "content_scripts/subtitles.js"
+        "content_scripts/subtitles.js",
+        "content_scripts/openai_queries.js"
       ],
       "matches": ["https://www.netflix.com/*"],
       "runAt": "document_start"

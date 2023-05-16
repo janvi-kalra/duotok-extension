@@ -94,28 +94,28 @@
   
   #popupWord, #definitionError {
     font-size: 24px;
-    margin: 0px;
+    margin: 5px;
   }
   
   #popupDef {
     font-size: 18px;
-    margin: 0px;
+    margin: 5px;
   }
   
   #popupPOS{
     font-size: 14px;
-    margin: 0px;
+    margin: 5px;
   }
 
   #popupRoman {
     font-size: 16px;
-    margin: 0px;
+    margin: 5px;
   }
   
   #popupEx {
     font-size: 18px;
     font-style: italic;
-    margin: 0px;
+    margin: 5px;
   }
 
   .visible {

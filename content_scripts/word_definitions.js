@@ -77,32 +77,8 @@ async function getDefinition(word, language, sentence) {
     return;
   }
   try {
-    const url = "https://api.openai.com/v1/completions";
-
-    const prompt = isNonwesternLanguage(language)
-      ? `Given the ${language} sentence "${sentence}". Return the list of strings: ["Short English definition", "New example ${language} sentence", "part of speech", "Romanization with spaces"] for the word "${word}"`
-      : `Given the ${language} sentence "${sentence}". Return the list of strings: ["Short English definition", "New example ${language} sentence", "part of speech"] for the word "${word}"`;
-
-    const completionResponse = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer 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`,
-      },
-      body: JSON.stringify({
-        model: "text-davinci-003",
-        prompt,
-        temperature: 0.2,
-        max_tokens: 100,
-        top_p: 1.0,
-        frequency_penalty: 0.0,
-        presence_penalty: 0.0,
-      }),
-    });
-
-    // Select the top choice.
-    const completion = await completionResponse.json();
-    const bestChoice = completion.choices.pop();
+    const response = await queryOpenAi(word, language, sentence);
+    const bestChoice = response.choices.pop();
     const list = JSON.parse(bestChoice.text);
 
     return {
