@@ -1,9 +1,10 @@
 :root {
-  --green: #c9e48a;
+  --background-green: #EBF3D6;
+  --text-green: #748828; 
 }
 
 html {
-  background-color: var(--green);
+  background-color: var(--background-green);
 }
 
 body {
@@ -120,7 +121,7 @@ input[type="checkbox"] {
 }
 
 .toggle-input:checked + .toggle {
-  background-color: var(--green);
+  background-color: var(--background-green);
 }
 
 /* Link Styling */
@@ -153,7 +154,7 @@ a:hover {
   margin-top: 10px;
 
 }
-
+background-green
 .availability {
   display: flex;
   justify-content: space-evenly;
@@ -165,4 +166,12 @@ a:hover {
 .watchOther {
   font-size: small;
   margin-top: 15px;
+  background-color: var(--background-green);
+  color: var(--text-green);
+  border-radius: 12px;
+  padding: 13px 17px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
 }

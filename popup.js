@@ -106,7 +106,8 @@ function updateAvailabilityStatus(elementId, available) {
 }
 
 function updateMoreShowsSubtitle(practiceLanguage) {
-  var subtitle = document.querySelector(".watchOther");
+  var button = document.querySelector(".watchOther");
   var linkToMore = other_netflix_shows[practiceLanguage];
-  subtitle.innerHTML = `Want to watching something else? <a target='blank' href=${linkToMore}>More</a> shows that support ${practiceLanguage}`;
+  button.href = linkToMore;
+  button.innerHTML = `More shows in ${practiceLanguage}`;
 }
