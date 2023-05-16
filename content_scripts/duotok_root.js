@@ -16,13 +16,13 @@ function addDuotokLayer() {
   
         <div id="definitionPopup">
           <div id="loader" class="loader"></div>
-          <div id="dataContainer" class="hidden">
+          <div id="dataContainer" display="none">
             <h3 id="popupWord"></h3>
             <p id="popupRoman"></p>
             <p id="popupPOS"></p>
             <p id="popupEx"></p>
           </div>
-          <div id="definitionError" class="hidden"></div>  
+          <div id="definitionError" class="none"></div>  
         </div>
   
         <div id="nativeSub">

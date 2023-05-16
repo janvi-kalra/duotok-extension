@@ -59,7 +59,7 @@ function addWordListeners(wordElement) {
       hideLoader();
       showData();
     } else {
-      errorGettingDefinition();
+      errorGettingDefinition(wordElement.textContent);
     }
   });
 }
@@ -122,26 +122,25 @@ function showLoader() {
   const loader = document.getElementById("loader");
   const dataContainer = document.getElementById("dataContainer");
 
-  loader.classList.remove("hidden");
-  dataContainer.classList.add("hidden");
+  loader.style.display = "block";
+  dataContainer.style.display = "none";
 }
 
 function hideLoader() {
   const loader = document.getElementById("loader");
-  loader.classList.add("hidden");
+  loader.style.display = "none";
 }
 
 function showData() {
   const dataContainer = document.getElementById("dataContainer");
-  dataContainer.classList.remove("hidden");
+  dataContainer.style.display = "block";
 }
 
-function errorGettingDefinition() {
+function errorGettingDefinition(word) {
   const error = document.getElementById("definitionError");
-  error.textContent =
-    "Uh Oh... we faced an error and we not able to grab the definition";
+  error.textContent = `Uh oh... unable to grab definition of ${word}`;
   hideLoader();
-  error.classList.remove("hidden");
+  error.style.display = "block";
 }
 
 function positionPopupAboveWord(popupElement, wordElement) {

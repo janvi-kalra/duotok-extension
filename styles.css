@@ -113,7 +113,7 @@
     margin: 0px;
   }
 
-  .hidden {
+  /* .hidden {
     height: 0;
     overflow: hidden;
     transition: height 0.3s ease;
@@ -122,7 +122,7 @@
   .hidden:not(.visible) {
     display: none;
   }
-  
+   */
   .visible {
     height: auto;
   }
