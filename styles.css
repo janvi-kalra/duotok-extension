@@ -102,8 +102,13 @@
     margin: 0px;
   }
   
-  #popupPOS, #popupRoman {
+  #popupPOS{
     font-size: 14px;
+    margin: 0px;
+  }
+
+  #popupRoman {
+    font-size: 16px;
     margin: 0px;
   }
   
@@ -113,16 +118,6 @@
     margin: 0px;
   }
 
-  /* .hidden {
-    height: 0;
-    overflow: hidden;
-    transition: height 0.3s ease;
-  }
-  
-  .hidden:not(.visible) {
-    display: none;
-  }
-   */
   .visible {
     height: auto;
   }

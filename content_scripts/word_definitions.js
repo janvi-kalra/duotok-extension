@@ -56,10 +56,9 @@ function addWordListeners(wordElement) {
       popupRoman.textContent = definition.romanization ?? "";
       popupPOS.textContent = definition.partOfSpeech;
       popupEx.textContent = definition.exampleSentence;
-      hideLoader();
-      showData();
+      showDataContainer();
     } else {
-      errorGettingDefinition(wordElement.textContent);
+      showErrorGettingDefinition(wordElement.textContent);
     }
   });
 }
@@ -119,27 +118,36 @@ async function getDefinition(word, language, sentence) {
 }
 
 function showLoader() {
-  const loader = document.getElementById("loader");
-  const dataContainer = document.getElementById("dataContainer");
+  const error = document.getElementById("definitionError");
+  error.style.display = "none";
 
-  loader.style.display = "block";
+  const dataContainer = document.getElementById("dataContainer");
   dataContainer.style.display = "none";
+
+  const loader = document.getElementById("loader");
+  loader.style.display = "block";
 }
 
-function hideLoader() {
+function showDataContainer() {
   const loader = document.getElementById("loader");
   loader.style.display = "none";
-}
 
-function showData() {
+  const error = document.getElementById("definitionError");
+  error.style.display = "none";
+
   const dataContainer = document.getElementById("dataContainer");
   dataContainer.style.display = "block";
 }
 
-function errorGettingDefinition(word) {
+function showErrorGettingDefinition(word) {
+  const loader = document.getElementById("loader");
+  loader.style.display = "none";
+
+  const dataContainer = document.getElementById("dataContainer");
+  dataContainer.style.display = "none";
+
   const error = document.getElementById("definitionError");
   error.textContent = `Uh oh... unable to grab definition of ${word}`;
-  hideLoader();
   error.style.display = "block";
 }
 

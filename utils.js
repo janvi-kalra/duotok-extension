@@ -52,6 +52,7 @@ function isNonwesternLanguage(lang) {
     "Swahili",
     "Tamil",
     "Ukrainian",
+    "Thai",
   ];
   return nwlangs.includes(lang);
 }
