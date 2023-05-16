@@ -23,6 +23,7 @@ function addWordListeners(wordElement) {
 
     const definitionPopup = document.getElementById("definitionPopup");
     showLoader();
+    positionPopupAboveWord(definitionPopup, wordElement);
 
     const sentence = Array.from(
       wordElement.parentElement.querySelectorAll("span")
@@ -57,7 +58,6 @@ function addWordListeners(wordElement) {
       popupEx.textContent = definition.exampleSentence;
       hideLoader();
       showData();
-      positionPopupAboveWord(definitionPopup, wordElement);
     } else {
       errorGettingDefinition();
     }
@@ -65,14 +65,14 @@ function addWordListeners(wordElement) {
 }
 
 async function getDefinition(word, language, sentence) {
-  return {
-    word: "this is a very long word",
-    definition: "this is a very very very very long definition",
-    partOfSpeech: "Noun",
-    exampleSentence:
-      "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
-    romanization: "Pahli",
-  };
+  // return {
+  //   word: "this is a very long word",
+  //   definition: "this is a very very very very long definition",
+  //   partOfSpeech: "Noun",
+  //   exampleSentence:
+  //     "this is a very very very very very very very very very very very very very very very very very very very very very long definition",
+  //   romanization: "Pahli",
+  // };
 
   if (!word || !language || !sentence) {
     return;
