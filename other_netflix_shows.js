@@ -10,7 +10,7 @@ export const other_netflix_shows = {
   Filipino: "https://www.netflix.com/browse/subtitles/81509728/fil",
   Finnish: "https://www.netflix.com/browse/subtitles/81506249/fi",
   French: "https://www.netflix.com/browse/subtitles/81582682/fr",
-  FrenchCanadian: "/https://www.netflix.combrowse/subtitles/81582685/fr-ca",
+  "French Canadian": "/https://www.netflix.combrowse/subtitles/81582685/fr-ca",
   Galician: "https://www.netflix.com/browse/subtitles/81619053",
   German: "https://www.netflix.com/browse/subtitles/81510841/de",
   Greek: "https://www.netflix.com/browse/subtitles/81510843/el",
@@ -28,14 +28,14 @@ export const other_netflix_shows = {
   Portuguese: "https://www.netflix.com/browse/subtitles/81582772/pt",
   Romanian: "https://www.netflix.com/browse/subtitles/81511522/ro",
   Russian: "https://www.netflix.com/browse/subtitles/81511524/ru",
-  SimplifiedChinese:
+  "Simplified Chinese":
     "https://www.netflix.com/browse/subtitles/81582910/zh-hans",
   Spanish: "https://www.netflix.com/browse/subtitles/81582672/es",
   Swedish: "https://www.netflix.com/browse/subtitles/81506257/sv",
   Swahili: "https://www.netflix.com/browse/subtitles/81511527/sw",
   Thai: "https://www.netflix.com/browse/subtitles/81511372/th",
   Tamil: "https://www.netflix.com/browse/subtitles/81508170/ta",
-  TraditionalChinese:
+  "Traditional Chinese":
     "https://www.netflix.com/browse/subtitles/81586250/zh-hant",
   Turkish: "https://www.netflix.com/browse/subtitles/81509381/tr",
   Ukrainian: "https://www.netflix.com/browse/subtitles/81628766",

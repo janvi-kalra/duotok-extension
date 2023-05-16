@@ -133,6 +133,7 @@ a {
   color: inherit;
   text-decoration: none;
   border-bottom: 1px solid var(--medium-grey);
+  color: var(--text-green);
 }
 
 a:hover {
@@ -140,8 +141,6 @@ a:hover {
   text-decoration: none;
   border-bottom: 1px solid #555;
 }
-
-#greyText 
 
 #credits,
 #bug-report, 
@@ -168,8 +167,11 @@ a:hover {
 }
 
 .watchOtherContainer {
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #watchOther {  
@@ -179,20 +181,25 @@ a:hover {
 
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 15x;
 
   background-color: var(--background-green);
   color: var(--text-green);
   padding: 17px;
+
+  display: flex;
+  justify-content: center;
 }
 
 #watchOther a {
   color: inherit;
   text-decoration: none;
+  border-bottom: none;
 }
 
 #watchOther a:hover {
   color: inherit;
   text-decoration: none;
+  border-bottom: none;
 }

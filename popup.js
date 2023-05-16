@@ -88,16 +88,16 @@ async function setAvailability() {
     subtitleIsAvailable = subtitleAvailability.subtitleAvailability;
   }
   if (subtitleIsAvailable) {
-    element.textContent = `✅ Subtitle Available`;
+    element.textContent = `✅ Subtitles Available`;
   } else {
-    element.textContent = `❌ Subtitle Unavailable`;
+    element.textContent = `❌ Subtitles Unavailable`;
   }
 }
 
 // Function to update the availability status
 function updateAvailabilityStatus(elementId, available) {
   const element = document.getElementById(elementId);
-  const type = elementId === "subtitleStatus" ? "Subtitle" : "Dubbing";
+  const type = elementId === "subtitleStatus" ? "Subtitles" : "Dubbing";
   if (available) {
     element.textContent = `✅ ${type} Available`;
   } else {
