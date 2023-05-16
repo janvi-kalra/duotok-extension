@@ -18,6 +18,7 @@ function addDuotokLayer() {
           <div id="loader" class="loader"></div>
           <div id="dataContainer" class="hidden">
             <h3 id="popupWord"></h3>
+            <p id="popupRoman"></p>
             <p id="popupPOS"></p>
             <p id="popupEx"></p>
           </div>

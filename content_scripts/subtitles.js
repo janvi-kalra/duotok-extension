@@ -314,7 +314,7 @@ function updatePracticeSubtitle(currentTime, subtitles) {
   });
 
   // No subtitles currently
-  if (!currentSubtitle?.text) {
+  if (!currentSubtitle) {
     hideDefinitionPopup();
     wipeCurrPracticeSubtitle();
     return;

@@ -47,13 +47,12 @@ function addWordListeners(wordElement) {
       definition.exampleSentence
     ) {
       const popupWord = document.getElementById("popupWord");
-      const popupDef = document.getElementById("popupDef");
+      const popupRoman = document.getElementById("popupRoman");
       const popupPOS = document.getElementById("popupPOS");
       const popupEx = document.getElementById("popupEx");
       // Populate definition modal
-      popupWord.textContent = `${definition.word} ⇢ ${
-        definition.definition
-      } + ${definition.romanization ?? "none"}`;
+      popupWord.textContent = `${definition.word} ⇢ ${definition.definition}`;
+      popupRoman.textContent = definition.romanization ?? "";
       popupPOS.textContent = definition.partOfSpeech;
       popupEx.textContent = definition.exampleSentence;
       hideLoader();

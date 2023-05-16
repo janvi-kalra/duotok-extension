@@ -30,4 +30,4 @@ chrome.runtime.onMessage.addListener(async (message, sender) => {
 });
 
 // Get feedback on uninstall.
-chrome.runtime.setUninstallURL("https://neyxaiuqdgy.typeform.com/to/jlwxlHC2");
+chrome.runtime.setUninstallURL("https://forms.gle/m3YRuRmBYQ9dE5gC6");
