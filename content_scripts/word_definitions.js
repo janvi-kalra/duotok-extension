@@ -82,7 +82,7 @@ async function getDefinition(word, language, sentence) {
     const list = JSON.parse(bestChoice.text);
 
     return {
-      word: word,
+      word: word.replace(/\p{P}/gu, ""), // Remove all punctuation
       definition: list[0],
       partOfSpeech: list[2],
       exampleSentence: list[1],

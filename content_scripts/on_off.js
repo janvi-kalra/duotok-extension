@@ -38,4 +38,5 @@ function resetNetflixSettings() {
   changeNetflixAudioSubtitle(audioEl, "Original");
   changeNetflixAudioSubtitle(subtitleEl, "Off");
   hideSubtitleSelection();
+  LANG_TYPE = "lang1";
 }

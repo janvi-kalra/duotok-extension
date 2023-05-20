@@ -32,17 +32,17 @@ function languageSpecificPrompt(word, language, sentence) {
   let prompt;
   if (language.includes("Chinese")) {
     prompt = `Given the ${language} sentence "${sentence}". 
-    Return the list of strings: 
+    Return a list with 4 strings: 
     ["Short English definition", "New example ${language} sentence", 
     "part of speech", "Pinyin"] for the word "${word}"`;
   } else if (isNonwesternLanguage(language)) {
     prompt = `Given the ${language} sentence "${sentence}". 
-    Return the list of strings: 
+    Return a list with 4 strings: 
     ["Short English definition", "New example ${language} sentence", 
     "part of speech", "Romanization with spaces"] for the word "${word}"`;
   } else {
     prompt = `Given the ${language} sentence "${sentence}". 
-      Return the list of strings: ["Short English definition", 
+      Return a list with 3 strings: ["Short English definition", 
       "New example ${language} sentence", "part of speech"] for the word "${word}"`;
   }
   return prompt;
