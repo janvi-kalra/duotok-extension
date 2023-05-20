@@ -8,7 +8,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   await setAvailability();
 });
 
+listenForUpdatesInPopupSettings();
 chrome.storage.onChanged.addListener(handleStorageChange);
+
+function listenForUpdatesInPopupSettings() {
+  document
+    .getElementById("languages-practice")
+    .addEventListener("change", async (event) => {
+      // console.log(`Changed PRACTICE language to ${event.target.value}`);
+      await chrome.storage.sync.set({ langPractice: event.target.value });
+      updateMoreShowsSubtitle(event.target.value);
+    });
+}
 
 // Function to handle changes in storage
 function handleStorageChange(changes) {
