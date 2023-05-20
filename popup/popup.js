@@ -1,4 +1,4 @@
-import { other_netflix_shows } from "./other_netflix_shows.js";
+import { other_netflix_shows } from "../other_netflix_shows.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   // await getAvailableLanguages();
@@ -8,18 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await setAvailability();
 });
 
-listenForUpdatesInPopupSettings();
 chrome.storage.onChanged.addListener(handleStorageChange);
-
-function listenForUpdatesInPopupSettings() {
-  document
-    .getElementById("languages-practice")
-    .addEventListener("change", async (event) => {
-      console.log(`Changed PRACTICE language to ${event.target.value}`);
-      await chrome.storage.sync.set({ langPractice: event.target.value });
-      updateMoreShowsSubtitle(event.target.value);
-    });
-}
 
 // Function to handle changes in storage
 function handleStorageChange(changes) {
@@ -36,6 +25,7 @@ function handleStorageChange(changes) {
 const toggle = document.querySelector(".toggle-input");
 toggle.addEventListener("change", async () => {
   await chrome.storage.sync.set({ duotokEnabled: toggle.checked });
+  toggle.checked ? showPopupBody() : hidePopupBody();
 });
 
 async function setDuotokEnabled() {
@@ -44,6 +34,8 @@ async function setDuotokEnabled() {
   if (duotokEnabled) {
     document.querySelector(".toggle-input").checked =
       duotokEnabled.duotokEnabled;
+
+    duotokEnabled.duotokEnabled ? showPopupBody() : hidePopupBody();
   } else {
     await chrome.storage.sync.set({ duotokEnabled: init_value });
   }
@@ -110,4 +102,12 @@ function updateMoreShowsSubtitle(practiceLanguage) {
   var linkToMore = other_netflix_shows[practiceLanguage];
   button.href = linkToMore;
   button.innerHTML = `More shows in ${practiceLanguage}`;
+}
+
+function showPopupBody() {
+  document.querySelector(".containerBody").style.display = "block";
+}
+
+function hidePopupBody() {
+  document.querySelector(".containerBody").style.display = "none";
 }

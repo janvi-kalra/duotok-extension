@@ -239,7 +239,7 @@ function initialSetup() {
         turnDuotokOff();
         return;
       }
-      console.log("Starting initial setup...");
+      // console.log("Starting initial setup...");
       turnDuotokOn();
       storeInitSubs();
       if (settings.langPractice) {
