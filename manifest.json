@@ -31,7 +31,7 @@
       "matches": ["https://www.netflix.com/*"]
     }
   ],
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs"],
   "description": "Learn languages while watching your favorite TV shows on Netflix",
   "icons": {
     "48": "icon48.png",
@@ -40,5 +40,5 @@
   "manifest_version": 3,
   "name": "DuoTok: watch Netflix to learn languages",
   "update_url": "https://clients2.google.com/service/update2/crx",
-  "version": "0.0.6"
+  "version": "0.0.8"
 }

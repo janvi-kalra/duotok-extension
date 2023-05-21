@@ -203,3 +203,11 @@ a:hover {
   text-decoration: none;
   border-bottom: none;
 }
+
+.navigateToNetflix {
+  display: block;
+  font-size: 15px; 
+  margin-bottom: 33px;
+  color: var(--medium-grey);
+  margin-top: 10px;
+}

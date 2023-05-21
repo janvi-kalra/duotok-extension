@@ -1,15 +1,33 @@
 import { other_netflix_shows } from "../other_netflix_shows.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // await getAvailableLanguages();
-  // On DOM load, set the language in the popup to the language in storage
-  await setPracticeLanguage();
-  await setDuotokEnabled();
-  await setAvailability();
-});
+  const activeTab = await getActiveTabURL();
 
-listenForUpdatesInPopupSettings();
-chrome.storage.onChanged.addListener(handleStorageChange);
+  if (activeTab.url.includes("netflix.com/watch")) {
+    document.querySelector(".containerBody").style.display = "block";
+    document.querySelector(".onoff").style.display = "flex";
+    document.querySelector(".navigateToNetflix").style.display = "none";
+
+    // await getAvailableLanguages();
+    // On DOM load, set the language in the popup to the language in storage
+    await setPracticeLanguage();
+    await setDuotokEnabled();
+    await setAvailability();
+
+    listenForUpdatesInPopupSettings();
+    chrome.storage.onChanged.addListener(handleStorageChange);
+
+    const toggle = document.querySelector(".toggle-input");
+    toggle.addEventListener("change", async () => {
+      await chrome.storage.sync.set({ duotokEnabled: toggle.checked });
+      toggle.checked ? showPopupBody() : hidePopupBody();
+    });
+  } else {
+    document.querySelector(".containerBody").style.display = "none";
+    document.querySelector(".onoff").style.display = "none";
+    document.querySelector(".navigateToNetflix").style.display = "block";
+  }
+});
 
 function listenForUpdatesInPopupSettings() {
   document
@@ -32,13 +50,6 @@ function handleStorageChange(changes) {
     }
   }
 }
-
-const toggle = document.querySelector(".toggle-input");
-toggle.addEventListener("change", async () => {
-  await chrome.storage.sync.set({ duotokEnabled: toggle.checked });
-  toggle.checked ? showPopupBody() : hidePopupBody();
-});
-
 async function setDuotokEnabled() {
   var init_value = true; // On installation, duotok is on.
   const duotokEnabled = await chrome.storage.sync.get(["duotokEnabled"]);
@@ -121,4 +132,13 @@ function showPopupBody() {
 
 function hidePopupBody() {
   document.querySelector(".containerBody").style.display = "none";
+}
+
+async function getActiveTabURL() {
+  const tabs = await chrome.tabs.query({
+    currentWindow: true,
+    active: true,
+  });
+
+  return tabs[0];
 }
